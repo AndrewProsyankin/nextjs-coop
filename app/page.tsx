@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import Header from './components/Header'
 import Footer from './components/Footer';
+import woman from '../public/images/woman.jpg';
 
 const HomePage = () => {
   const router = useRouter();
