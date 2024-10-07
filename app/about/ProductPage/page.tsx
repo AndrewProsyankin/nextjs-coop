@@ -1,7 +1,6 @@
 'use client'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
-import { useRouter } from 'next/navigation';
 
 
 
@@ -15,11 +14,8 @@ const features = [
   ]
   
   const ProductPage = () => {
-    const router = useRouter();
-  
-    const handleNavigate = () => {
-      router.push('/about');
-    } 
+
+
     return (
       <div>  {}
         <Header /> 
