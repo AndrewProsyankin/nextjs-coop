@@ -1,6 +1,8 @@
 'use client';
 import { SetStateAction, useState } from 'react';
 import Cart from '../Cart/page';
+import { useCart } from '@/app/components/CartContext';
+import Header from '@/app/components/Header';
 
 interface Product {
   id: number;
@@ -60,10 +62,11 @@ const products: Product[] = [
   },
 ];
 
-export default function ProductPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]); // Specify the type here
 
-  const addToCart = (product: Product) => { // Specify the type for product
+export default function ProductPage() {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  const addToCart = (product: Product) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
       if (existingItem) {
@@ -71,12 +74,13 @@ export default function ProductPage() {
           item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
-      return [...prevItems, { ...product, quantity: 1, color: '' }]; // Ensure to provide color
+      return [...prevItems, { ...product, quantity: 1, color: '' }];
     });
   };
 
   return (
     <div>
+      <Header cartItems={cartItems} setCartItems={setCartItems} /> {/* Pass cart state to Header */}
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <h2 className="sr-only">Products</h2>
@@ -103,7 +107,8 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
-      <Cart cartItems={cartItems} setCartItems={setCartItems} />
     </div>
   );
 }
+
+

@@ -29,7 +29,13 @@ export default function Cart({ cartItems, setCartItems }: CartProps) {
   };
 
   const handleRemove = (id: number) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
+    setCartItems((items) =>
+      items.map((item) =>
+        item.id === id
+          ? { ...item, quantity: item.quantity - 1 } // Decrease quantity by 1
+          : item
+      ).filter((item) => item.quantity > 0) // Remove item if quantity is 0
+    );
   };
 
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);

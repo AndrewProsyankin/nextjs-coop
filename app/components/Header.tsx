@@ -1,12 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Dialog,
-  DialogBackdrop,
-} from '@headlessui/react';
+import { Dialog } from '@headlessui/react';
 import { Bars3Icon, ShoppingBagIcon } from '@heroicons/react/24/outline';
-import Cart from '../about/Cart/page'; // Adjust the path if necessary
+import Cart from '../about/Cart/page';
 
 interface CartItem {
   id: number;
@@ -15,7 +12,7 @@ interface CartItem {
   quantity: number;
   imageSrc: string;
   imageAlt: string;
-  color: string; // Added missing color field
+  color: string;
 }
 
 interface HeaderProps {
@@ -35,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ cartItems, setCartItems }) => {
     <div className="bg-white">
       {/* Mobile menu */}
       <Dialog open={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} className="relative z-40 lg:hidden">
-        <DialogBackdrop className="fixed inset-0 bg-black bg-opacity-25 transition-opacity duration-300 ease-linear" />
+        {/* Dialog backdrop and content */}
       </Dialog>
 
       <header className="relative bg-white">
@@ -72,12 +69,11 @@ const Header: React.FC<HeaderProps> = ({ cartItems, setCartItems }) => {
                   {/* Cart items count */}
                   {cartItems.length > 0 && (
                     <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs text-white">
-                      {cartItems.length}
+                      {cartItems.reduce((total, item) => total + item.quantity, 0)} {/* Total items count */}
                     </span>
                   )}
                 </button>
-
-                {/* Render Cart component */}
+                {/* Render Cart component when cart is open */}
                 {isCartOpen && <Cart cartItems={cartItems} setCartItems={setCartItems} />}
               </div>
             </div>
