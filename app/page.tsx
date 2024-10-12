@@ -1,19 +1,16 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import Header from './components/Header'
-import Footer from './components/Footer';
 import Image from 'next/image';
 
 const HomePage = () => {
   const router = useRouter();
 
   const handleNavigate = () => {
-    router.push('/about');
+    router.push('/about/Categories');
   };
 
   return (
     <div>  {}
-      <Header /> 
         <div className="relative z-index-1000 overflow-hidden bg-white">
           <div className="pb-80 pt-16 sm:pb-40 sm:pt-24 lg:pb-48 lg:pt-40">
             <div className="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
@@ -40,7 +37,7 @@ const HomePage = () => {
                             alt=""
                             src="/images/woman.jpg"
                             className="h-full w-full object-cover object-center"
-                            width={500} 
+                             width={500} 
                             height={500}
                           />
                         </div>
@@ -68,7 +65,6 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-      <Footer />
     </div>  
   );
 };

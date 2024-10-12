@@ -1,71 +1,109 @@
-'use client'
-import Header from '../../components/Header'
-import Footer from '../../components/Footer'
+'use client';
+import { SetStateAction, useState } from 'react';
+import Cart from '../Cart/page';
 
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  imageSrc: string;
+  imageAlt: string;
+}
 
+interface CartItem extends Product {
+  quantity: number;
+  color: string; // You can define a default color or modify this based on your design
+}
 
-const features = [
-    { name: 'Origin', description: 'Designed by Good Goods, Inc.' },
-    { name: 'Material', description: 'Solid walnut base with rare earth magnets and powder coated steel card cover' },
-    { name: 'Dimensions', description: '6.25" x 3.55" x 1.15"' },
-    { name: 'Finish', description: 'Hand sanded and finished with natural oil' },
-    { name: 'Includes', description: 'Wood card tray and 3 refill packs' },
-    { name: 'Considerations', description: 'Made from natural materials. Grain and color vary with each item.' },
-  ]
-  
-  const ProductPage = () => {
+const products: Product[] = [
+  {
+    id: 1,
+    name: 'Earthen Bottle',
+    price: 30.0,
+    imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/category-page-04-image-card-01.jpg',
+    imageAlt: 'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
+  },
+  {
+    id: 2,
+    name: 'Nomad Tumbler',
+    price: 84.0,
+    imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/category-page-04-image-card-02.jpg',
+    imageAlt: 'Olive drab green insulated bottle with flared screw lid and flat top.',
+  },
+  {
+    id: 3,
+    name: 'Focus Paper Refill',
+    price: 79.0,
+    imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/category-page-04-image-card-03.jpg',
+    imageAlt: 'Person using a pen to cross a task off a productivity paper card.',
+  },
+  {
+    id: 4,
+    name: 'Machined Mechanical Pencil',
+    price: 95.0,
+    imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/category-page-04-image-card-04.jpg',
+    imageAlt: 'Hand holding black machined steel mechanical pencil with brass tip and top.',
+  },
+  {
+    id: 5,
+    name: 'Medium Stuff Satchel',
+    price: 32.0,
+    imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
+    imageAlt: 'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
+  },
+  {
+    id: 6,
+    name: 'Throwback Hip Bag',
+    price: 90.0,
+    imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
+    imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
+  },
+];
 
+export default function ProductPage() {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]); // Specify the type here
 
-    return (
-      <div>  {}
-        <Header /> 
-          <div className="bg-white">
-            <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-16 px-4 py-24 sm:px-6 sm:py-32 lg:max-w-7xl lg:grid-cols-2 lg:px-8">
-              <div>
-                <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Technical Specifications</h2>
-                <p className="mt-4 text-gray-500">
-                  The walnut wood card tray is precision milled to perfectly fit a stack of Focus cards. The powder coated
-                  steel divider separates active cards from new ones, or can be used to archive important task lists.
-                </p>
-      
-                <dl className="mt-16 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 sm:gap-y-16 lg:gap-x-8">
-                  {features.map((feature) => (
-                    <div key={feature.name} className="border-t border-gray-200 pt-4">
-                      <dt className="font-medium text-gray-900">{feature.name}</dt>
-                      <dd className="mt-2 text-sm text-gray-500">{feature.description}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-              <div className="grid grid-cols-2 grid-rows-2 gap-4 sm:gap-6 lg:gap-8">
-                <img
-                  alt="Walnut card tray with white powder coated steel divider and 3 punchout holes."
-                  src="https://tailwindui.com/plus/img/ecommerce-images/product-feature-03-detail-01.jpg"
-                  className="rounded-lg bg-gray-100"
-                />
-                <img
-                  alt="Top down view of walnut card tray with embedded magnets and card groove."
-                  src="https://tailwindui.com/plus/img/ecommerce-images/product-feature-03-detail-02.jpg"
-                  className="rounded-lg bg-gray-100"
-                />
-                <img
-                  alt="Side of walnut card tray with card groove and recessed card area."
-                  src="https://tailwindui.com/plus/img/ecommerce-images/product-feature-03-detail-03.jpg"
-                  className="rounded-lg bg-gray-100"
-                />
-                <img
-                  alt="Walnut card tray filled with cards and card angled in dedicated groove."
-                  src="https://tailwindui.com/plus/img/ecommerce-images/product-feature-03-detail-04.jpg"
-                  className="rounded-lg bg-gray-100"
-                />
-              </div>
-            </div>
-          </div>
-        <Footer />
-      </div> 
-    )
+  const addToCart = (product: Product) => { // Specify the type for product
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find((item) => item.id === product.id);
+      if (existingItem) {
+        return prevItems.map((item) =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prevItems, { ...product, quantity: 1, color: '' }]; // Ensure to provide color
+    });
   };
 
-  
-  export default ProductPage;
-  
+  return (
+    <div>
+      <div className="bg-white">
+        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+          <h2 className="sr-only">Products</h2>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+            {products.map((product) => (
+              <div key={product.id} className="group">
+                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                  <img
+                    src={product.imageSrc}
+                    alt={product.imageAlt}
+                    className="h-full w-full object-cover object-center group-hover:opacity-75"
+                  />
+                </div>
+                <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
+                <p className="mt-1 text-lg font-medium text-gray-900">${product.price.toFixed(2)}</p>
+                <button
+                  onClick={() => addToCart(product)}
+                  className="mt-4 w-full rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                >
+                  Add to cart
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <Cart cartItems={cartItems} setCartItems={setCartItems} />
+    </div>
+  );
+}
