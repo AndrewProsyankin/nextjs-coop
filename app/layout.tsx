@@ -1,13 +1,13 @@
-"use client"; // Add this line at the top
+"use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import localFont from 'next/font/local';
 import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { usePathname } from 'next/navigation';
-
-// Load custom fonts
+import { CartProvider } from './components/CartContext';
+import { useCart } from './components/CartContext';
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans',
@@ -20,7 +20,6 @@ const geistMono = localFont({
   weight: '100 900',
 });
 
-// Cart item interface definition
 interface CartItem {
   id: number;
   name: string;
@@ -31,25 +30,26 @@ interface CartItem {
   color: string;
 }
 
-// Root layout component
 export default function RootLayout({
+
   children,
 }: {
-  children: React.ReactNode; // Explicitly define the type for children
+  children: React.ReactNode;
 }) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]); // State for cart items
+  // const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const pathname = usePathname();
+  
 
   return (
+  <CartProvider >
     <html lang="en">
+
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* Conditionally render Header only if we are not on the ProductPage */}
-        {pathname !== '/about/ProductPage' && <Header cartItems={cartItems} setCartItems={setCartItems} />}
-        
-        {/* Pass down cart state as props to pages */}
-        <main>{React.cloneElement(children as React.ReactElement, { cartItems, setCartItems })}</main>
+        {pathname !== '/about/ProductPage' && <Header />}
+        <main>{React.cloneElement(children as React.ReactElement)}</main>
         <Footer />
       </body>
     </html>
+    </CartProvider>
   );
 }

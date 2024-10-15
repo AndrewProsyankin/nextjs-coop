@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { Bars3Icon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import Cart from '../about/Cart/page';
-
+import { useCart } from './CartContext';
 interface CartItem {
   id: number;
   name: string;
@@ -20,10 +20,10 @@ interface HeaderProps {
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
 }
 
-const Header: React.FC<HeaderProps> = ({ cartItems, setCartItems }) => {
+const Header = ({  }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-
+  const {cartItems} = useCart();
   const toggleCart = () => {
     setIsCartOpen((prevState) => !prevState);
   };
@@ -55,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({ cartItems, setCartItems }) => {
               {/* Logo */}
               <div className="ml-4 flex lg:ml-0">
                 <a href="#">
-                  <img alt="Your Company" src="logo-path.svg" className="h-8 w-auto" />
+                  <img alt="Your Company" src="/images/bylane.png" className="h-8 w-auto" />
                 </a>
               </div>
 
@@ -67,6 +67,8 @@ const Header: React.FC<HeaderProps> = ({ cartItems, setCartItems }) => {
                 >
                   <ShoppingBagIcon className="h-6 w-6" aria-hidden="true" />
                   {/* Cart items count */}
+
+
                   {cartItems.length > 0 && (
                     <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs text-white">
                       {cartItems.reduce((total, item) => total + item.quantity, 0)} {/* Total items count */}
@@ -74,7 +76,7 @@ const Header: React.FC<HeaderProps> = ({ cartItems, setCartItems }) => {
                   )}
                 </button>
                 {/* Render Cart component when cart is open */}
-                {isCartOpen && <Cart cartItems={cartItems} setCartItems={setCartItems} />}
+                {isCartOpen && <Cart  />}
               </div>
             </div>
           </div>

@@ -1,6 +1,6 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-// Define the structure of Product and CartItem
+
 interface Product {
   id: number;
   name: string;
@@ -17,6 +17,7 @@ interface CartItem extends Product {
 // Define the context state
 interface CartContextType {
   cartItems: CartItem[];
+  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
 }
@@ -35,7 +36,21 @@ export const useCart = () => {
 
 // CartProvider to wrap around components where the cart state is needed
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  // Load cart items from local storage, or initialize as an empty array
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    if (typeof window !== "undefined") {
+      const storedCart = localStorage.getItem('cartItems');
+      return storedCart ? JSON.parse(storedCart) : [];
+    }
+    return [];
+  });
+
+  // Effect to update local storage whenever cartItems changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    }
+  }, [cartItems]);
 
   const addToCart = (product: Product) => {
     setCartItems((prevItems) => {
@@ -54,9 +69,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, setCartItems, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );
 };
-

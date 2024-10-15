@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-
+import { useCart } from '@/app/components/CartContext';
 interface Product {
   id: number;
   name: string;
@@ -21,9 +21,9 @@ interface CartProps {
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
 }
 
-export default function Cart({ cartItems, setCartItems }: CartProps) {
+export default function Cart({}) {
   const [open, setOpen] = useState(true);
-
+  const {cartItems, setCartItems} = useCart();
   const handleOpen = () => {
     setOpen((prevState) => !prevState);
   };

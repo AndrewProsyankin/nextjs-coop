@@ -1,0 +1,57 @@
+[
+    {
+      "id": 1,
+      "name": "Earthen Bottle",
+      "price": 30.0,
+      "imageSrc": "https://tailwindui.com/plus/img/ecommerce-images/category-page-04-image-card-01.jpg",
+      "imageAlt": "Tall slender porcelain bottle with natural clay textured body and cork stopper.",
+      "quantity": 1,
+      "color": "Natural"
+    },
+    {
+      "id": 2,
+      "name": "Nomad Tumbler",
+      "price": 84.0,
+      "imageSrc": "https://tailwindui.com/plus/img/ecommerce-images/category-page-04-image-card-02.jpg",
+      "imageAlt": "Olive drab green insulated bottle with flared screw lid and flat top.",
+      "quantity": 1,
+      "color": "Olive"
+    },
+    {
+      "id": 3,
+      "name": "Focus Paper Refill",
+      "price": 79.0,
+      "imageSrc": "https://tailwindui.com/plus/img/ecommerce-images/category-page-04-image-card-03.jpg",
+      "imageAlt": "Person using a pen to cross a task off a productivity paper card.",
+      "quantity": 1,
+      "color": "White"
+    },
+    {
+      "id": 4,
+      "name": "Machined Mechanical Pencil",
+      "price": 95.0,
+      "imageSrc": "https://tailwindui.com/plus/img/ecommerce-images/category-page-04-image-card-04.jpg",
+      "imageAlt": "Hand holding black machined steel mechanical pencil with brass tip and top.",
+      "quantity": 1,
+      "color": "Black"
+    },
+    {
+      "id": 5,
+      "name": "Medium Stuff Satchel",
+      "price": 32.0,
+      "imageSrc": "https://tailwindui.com/plus/img/ecommerce-images/shopping-cart-page-04-product-02.jpg",
+      "imageAlt": "Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.",
+      "quantity": 1,
+      "color": "Blue"
+    },
+    {
+      "id": 6,
+      "name": "Throwback Hip Bag",
+      "price": 90.0,
+      "imageSrc": "https://tailwindui.com/plus/img/ecommerce-images/shopping-cart-page-04-product-01.jpg",
+      "imageAlt": "Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.",
+      "quantity": 1,
+      "color": "Salmon"
+    }
+  ]
+  
