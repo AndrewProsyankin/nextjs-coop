@@ -5,6 +5,7 @@ import { Dialog } from '@headlessui/react';
 import { Bars3Icon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import Cart from '../about/Cart/page';
 import { useCart } from './CartContext';
+import Image from 'next/image';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -42,7 +43,7 @@ const Header = () => {
               {/* Logo */}
               <div className="ml-4 flex lg:ml-0">
                 <a href="#">
-                  <img alt="Your Company" src="/images/bylane.png" className="h-8 w-auto" />
+                  <Image alt="Your Company" src="/images/bylane.png" className="h-8 w-auto" />
                 </a>
               </div>
 

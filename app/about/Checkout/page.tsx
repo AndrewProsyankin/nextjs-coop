@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 interface CartItem {
@@ -43,7 +44,7 @@ const Checkout: React.FC<CheckoutProps> = ({ items, onRemove, onUpdateQuantity }
               {items.map(item => (
                 <li key={item.id} className="flex justify-between items-center border-b py-4">
                   <div className="flex items-center">
-                    <img src={item.imageUrl} alt={item.name} className="h-16 w-16 object-cover rounded mr-4" />
+                    <Image src={item.imageUrl} alt={item.name} className="h-16 w-16 object-cover rounded mr-4" />
                     <div>
                       <h3 className="text-md font-medium text-gray-900">{item.name}</h3>
                       <p className="text-sm text-gray-600">{item.description}</p>

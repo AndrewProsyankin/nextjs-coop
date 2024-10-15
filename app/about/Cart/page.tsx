@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useCart } from '@/app/components/CartContext';
+import Image from 'next/image';
 
 export default function Cart() {
   const [open, setOpen] = useState(true);
@@ -39,7 +40,7 @@ export default function Cart() {
                       {cartItems.map((product) => (
                         <li key={product.id} className="flex py-6">
                           <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                            <img
+                            <Image
                               alt={product.imageAlt}
                               src={product.imageSrc}
                               className="h-full w-full object-cover object-center"
@@ -55,7 +56,7 @@ export default function Cart() {
                             <div className="flex items-end justify-between text-sm">
                               <button
                                 type="button"
-                                onClick={() => removeFromCart(product.id)} // Use removeFromCart from context
+                                onClick={() => removeFromCart(product.id)} 
                                 className="font-medium text-indigo-600 hover:text-indigo-500"
                               >
                                 Remove
