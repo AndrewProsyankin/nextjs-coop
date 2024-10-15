@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import localFont from 'next/font/local';
 import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { usePathname } from 'next/navigation';
 import { CartProvider } from './components/CartContext';
-import { useCart } from './components/CartContext';
+
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans',

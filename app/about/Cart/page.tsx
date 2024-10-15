@@ -18,7 +18,7 @@ interface CartItem extends Product {
 
 interface CartProps {
   cartItems: CartItem[];
-  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
+  
 }
 
 export default function Cart({}) {
