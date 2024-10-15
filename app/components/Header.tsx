@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog } from '@headlessui/react';
 import { Bars3Icon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import Cart from '../about/Cart/page';
@@ -11,7 +11,14 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { cartItems } = useCart();
-  
+  const [totalItemsCount, setTotalItemsCount] = useState(0); // Состояние для количества элементов в корзине
+
+  // Эффект для обновления количества элементов в корзине
+  useEffect(() => {
+    const count = cartItems.reduce((total, item) => total + item.quantity, 0);
+    setTotalItemsCount(count);
+  }, [cartItems]); // Обновляем при изменении cartItems
+
   const toggleCart = () => {
     setIsCartOpen((prevState) => !prevState);
   };
@@ -43,7 +50,13 @@ const Header = () => {
               {/* Logo */}
               <div className="ml-4 flex lg:ml-0">
                 <a href="#">
-                  <Image alt="Your Company" src="/images/bylane.png" className="h-8 w-auto" />
+                  <Image
+                    alt="Your Company"
+                    src="/images/bylane.png"
+                    className="h-8 w-auto"
+                    width={500}
+                    height={500}
+                  />
                 </a>
               </div>
 
@@ -55,12 +68,13 @@ const Header = () => {
                 >
                   <ShoppingBagIcon className="h-6 w-6" aria-hidden="true" />
                   {/* Cart items count */}
-                  {cartItems.length > 0 && (
+                  {totalItemsCount > 0 && (
                     <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs text-white">
-                      {cartItems.reduce((total, item) => total + item.quantity, 0)} {/* Total items count */}
+                      {totalItemsCount} {/* Total items count */}
                     </span>
                   )}
                 </button>
+
                 {/* Render Cart component when cart is open */}
                 {isCartOpen && <Cart />}
               </div>

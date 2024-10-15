@@ -44,6 +44,8 @@ export default function Cart() {
                               alt={product.imageAlt}
                               src={product.imageSrc}
                               className="h-full w-full object-cover object-center"
+                              width={500} 
+                              height={500}
                             />
                           </div>
 

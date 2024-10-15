@@ -1,13 +1,22 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 const HomePage = () => {
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
 
   const handleNavigate = () => {
     router.push('/about/Categories');
   };
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <div>  {}
@@ -59,7 +68,7 @@ const HomePage = () => {
                   onClick={handleNavigate}
                   className="inline-block rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-center font-medium text-white hover:bg-indigo-700"
                 >
-                  Shop Collection
+                    <span>Shop Collection</span>
                 </button>
               </div>
             </div>

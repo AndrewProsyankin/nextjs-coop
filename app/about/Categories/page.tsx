@@ -53,6 +53,8 @@ export default function CollectionsPage() {
                       alt={callout.imageAlt}
                       src={callout.imageSrc}
                       className="h-full w-full object-cover object-center"
+                      width={500} 
+                      height={500}
                     />
                   </div>
                   <h3 className="mt-6 text-sm text-gray-500">

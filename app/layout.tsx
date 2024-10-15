@@ -20,27 +20,22 @@ const geistMono = localFont({
   weight: '100 900',
 });
 
-
 export default function RootLayout({
-
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const pathname = usePathname();
   
-
   return (
-  <CartProvider >
-    <html lang="en">
-
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {pathname !== '/about/ProductPage' && <Header />}
-        <main>{React.cloneElement(children as React.ReactElement)}</main>
-        <Footer />
-      </body>
-    </html>
+    <CartProvider>
+      <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          {pathname !== '/about/ProductPage' && <Header />}
+          <main>{children}</main>
+          <Footer />
+        </body>
+      </html>
     </CartProvider>
   );
 }
