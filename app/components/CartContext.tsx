@@ -61,6 +61,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         );
       }
       return [...prevItems, { ...product, quantity: 1, color: '' }];
+      
     });
   };
 

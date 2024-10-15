@@ -3,39 +3,13 @@ import { useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useCart } from '@/app/components/CartContext';
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  imageSrc: string;
-  imageAlt: string;
-}
 
-interface CartItem extends Product {
-  quantity: number;
-  color: string; // You can set a default color or change this based on your design
-}
-
-interface CartProps {
-  cartItems: CartItem[];
-  
-}
-
-export default function Cart({}) {
+export default function Cart() {
   const [open, setOpen] = useState(true);
-  const {cartItems, setCartItems} = useCart();
+  const { cartItems, removeFromCart } = useCart(); // Destructure removeFromCart from context
+
   const handleOpen = () => {
     setOpen((prevState) => !prevState);
-  };
-
-  const handleRemove = (id: number) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id
-          ? { ...item, quantity: item.quantity - 1 } // Decrease quantity by 1
-          : item
-      ).filter((item) => item.quantity > 0) // Remove item if quantity is 0
-    );
   };
 
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -81,7 +55,7 @@ export default function Cart({}) {
                             <div className="flex items-end justify-between text-sm">
                               <button
                                 type="button"
-                                onClick={() => handleRemove(product.id)}
+                                onClick={() => removeFromCart(product.id)} // Use removeFromCart from context
                                 className="font-medium text-indigo-600 hover:text-indigo-500"
                               >
                                 Remove
