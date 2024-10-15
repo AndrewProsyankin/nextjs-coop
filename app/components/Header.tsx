@@ -5,25 +5,12 @@ import { Dialog } from '@headlessui/react';
 import { Bars3Icon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import Cart from '../about/Cart/page';
 import { useCart } from './CartContext';
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  imageSrc: string;
-  imageAlt: string;
-  color: string;
-}
 
-interface HeaderProps {
-  cartItems: CartItem[];
-  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
-}
-
-const Header = ({  }) => {
+const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const {cartItems} = useCart();
+  const { cartItems } = useCart();
+  
   const toggleCart = () => {
     setIsCartOpen((prevState) => !prevState);
   };
@@ -67,8 +54,6 @@ const Header = ({  }) => {
                 >
                   <ShoppingBagIcon className="h-6 w-6" aria-hidden="true" />
                   {/* Cart items count */}
-
-
                   {cartItems.length > 0 && (
                     <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs text-white">
                       {cartItems.reduce((total, item) => total + item.quantity, 0)} {/* Total items count */}
@@ -76,7 +61,7 @@ const Header = ({  }) => {
                   )}
                 </button>
                 {/* Render Cart component when cart is open */}
-                {isCartOpen && <Cart  />}
+                {isCartOpen && <Cart />}
               </div>
             </div>
           </div>

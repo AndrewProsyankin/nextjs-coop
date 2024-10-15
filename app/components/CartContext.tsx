@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-
+// Define the structure of Product and CartItem
 interface Product {
   id: number;
   name: string;
@@ -17,9 +17,9 @@ interface CartItem extends Product {
 // Define the context state
 interface CartContextType {
   cartItems: CartItem[];
-  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
+  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>; 
 }
 
 // Create the CartContext with a default value
