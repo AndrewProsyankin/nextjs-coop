@@ -20,15 +20,6 @@ const geistMono = localFont({
   weight: '100 900',
 });
 
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  imageSrc: string;
-  imageAlt: string;
-  color: string;
-}
 
 export default function RootLayout({
 
