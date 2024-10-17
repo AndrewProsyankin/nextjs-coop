@@ -56,6 +56,7 @@ const Checkout: React.FC = () => {
                             min="1"
                             onChange={(e) => updateCartItem(item.id, Number(e.target.value))}
                             className="w-16 border rounded-md py-1 px-2 mr-2"
+                            style={{ color: 'gray' }}
                           />
                           <button
                             onClick={() => removeFromCart(item.id)}
@@ -66,8 +67,9 @@ const Checkout: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="text-lg font-semibold text-gray-900 mt-4 md:mt-0">
-                      ${item.price.toFixed(2)}
+                    <div className="ml-4 flex flex-col font-semibold items-end">
+                      <p>${(item.price * item.quantity).toFixed(2)}</p>
+                      <p className="mt-2 text-sm text-gray-600">Price ${item.price}</p>
                     </div>
                   </div>
                 ))
@@ -88,9 +90,9 @@ const Checkout: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-6">
+            <div className="flex justify-center mt-9">
               <button
-                className="w-full bg-blue-600 text-white font-bold py-2 rounded-md hover:bg-blue-700"
+                className="bg-[#3178c6] text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 w-full max-w-md"
                 onClick={() => {
                   router.push('/thank-you');
                 }}
@@ -102,11 +104,6 @@ const Checkout: React.FC = () => {
         </div>
       </main>
 
-      <footer className="bg-white shadow mt-10">
-        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 text-center text-gray-600">
-          © 2024 Your Company Name. All rights reserved.
-        </div>
-      </footer>
     </div>
   );
 };

@@ -12,6 +12,7 @@ interface Product {
 interface CartItem extends Product {
   quantity: number;
   color: string;
+  price: number;
 }
 
 // Define the context state

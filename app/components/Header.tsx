@@ -31,13 +31,27 @@ const Header = () => {
       </Dialog>
 
       <header className="relative bg-white">
-        <p className="flex h-10 items-center justify-center bg-indigo-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
+        <p className="flex h-10 items-center justify-center bg-[#3178c6] px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
           Get free delivery on orders over $100
         </p>
 
         <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="border-b border-gray-200">
             <div className="flex h-16 items-center">
+
+              {/* Logo */}
+              <div className="ml-4 flex lg:ml-0">
+                <a href="#">
+                <Image
+                  alt=""
+                  src="/images/LOGO.jpg"
+                  className="h-13 w-30 mx-auto rounded-lg"
+                  width={80}
+                  height={80}
+                />
+                </a>
+              </div>
+
               {/* Mobile menu button */}
               <button
                 type="button"
@@ -46,19 +60,6 @@ const Header = () => {
               >
                 <Bars3Icon className="h-6 w-6" aria-hidden="true" />
               </button>
-
-              {/* Logo */}
-              <div className="ml-4 flex lg:ml-0">
-                <a href="#">
-                  <Image
-                    alt="Your Company"
-                    src="/images/bylane.png"
-                    className="h-8 w-auto"
-                    width={500}
-                    height={500}
-                  />
-                </a>
-              </div>
 
               {/* Cart Icon */}
               <div className="ml-auto flex items-center">

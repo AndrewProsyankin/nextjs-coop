@@ -50,11 +50,16 @@ export default function Cart() {
                           </div>
 
                           <div className="ml-4 flex flex-1 flex-col">
-                            <div className="flex justify-between text-base font-medium text-gray-900">
-                              <h3>{product.name}</h3>
-                              <p className="ml-4">${(product.price * product.quantity).toFixed(2)}</p>
+                          <div className="flex justify-between font-semibold text-gray-900">
+                            <h3>{product.name}</h3>
+                            <div className="ml-4 flex flex-col items-end">
+                              <p>${(product.price * product.quantity).toFixed(2)}</p>
+                              <p className="mt-2 text-sm text-gray-600">Price ${product.price}</p>
                             </div>
+                          </div>
+
                             <p className="mt-1 text-sm text-gray-500">Qty {product.quantity}</p>
+                            
                             <div className="flex items-end justify-between text-sm">
                               <button
                                 type="button"
