@@ -1,0 +1,35 @@
+[
+    {
+      "label": "Dashboard",
+      "items": [
+        { "label": "Overview", "href": "#" },
+        { "label": "Reports", "href": "#" },
+        { "label": "Analytics", "href": "#" }
+      ]
+    },
+    {
+      "label": "Navigation",
+      "items": [
+        { "label": "Collections", "href": "/about/Categories" },
+        { "label": "Products", "href": "/about/ProductPage" },
+        { "label": "Activity", "href": "#" }
+      ]
+    },
+    {
+      "label": "Projects",
+      "items": [
+        { "label": "New Project", "href": "#" },
+        { "label": "Manage Projects", "href": "#" },
+        { "label": "Completed", "href": "#" }
+      ]
+    },
+    {
+      "label": "Calendar",
+      "items": [
+        { "label": "Upcoming Events", "href": "#" },
+        { "label": "Deadlines", "href": "#" },
+        { "label": "Holidays", "href": "#" }
+      ]
+    }
+  ]
+  

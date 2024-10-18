@@ -1,8 +1,7 @@
 'use client';
-
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';  
+
 
 export default function CollectionsPage() {
   const router = useRouter(); 
@@ -27,7 +26,7 @@ export default function CollectionsPage() {
       href: '#',
     },
     {
-      name: 'Travel',
+      name: 'Travel', 
       description: 'Daily commute essentials',
       imageSrc: '/images/travel.jpg',
       imageAlt: 'Collection of four insulated travel bottles on wooden shelf.',
@@ -37,11 +36,11 @@ export default function CollectionsPage() {
 
   return (
     <div>
-      <Header />
+
       <div className="bg-gray-100">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl py-16 sm:py-24 lg:max-w-none lg:py-32">
-            <h2 className="text-2xl font-bold text-gray-900">Collections</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Collections</h2>
 
             <div className="mt-6 space-y-12 lg:grid lg:grid-cols-3 lg:gap-x-6 lg:space-y-0">
               {callouts.map((callout) => (
@@ -50,10 +49,12 @@ export default function CollectionsPage() {
                     onClick={() => handleNavigate(callout.href)} 
                     className="relative h-80 w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-64 cursor-pointer"
                   >
-                    <img
+                    <Image
                       alt={callout.imageAlt}
                       src={callout.imageSrc}
                       className="h-full w-full object-cover object-center"
+                      width={500} 
+                      height={500}
                     />
                   </div>
                   <h3 className="mt-6 text-sm text-gray-500">
@@ -69,7 +70,7 @@ export default function CollectionsPage() {
           </div>
         </div>
       </div>
-      <Footer />
+
     </div>
   );
 }
