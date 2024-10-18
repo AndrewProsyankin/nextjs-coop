@@ -79,12 +79,12 @@ const Checkout: React.FC = () => {
             </div>
 
             <div className="mt-6 border-t pt-4">
-              <h2 className="text-lg font-semibold mb-4 text-blue-700">Order Summary</h2>
-              <div className="flex justify-between mb-2 text-blue-700">
+              <h2 className="text-lg font-semibold mb-4 text-gray-600">Order Summary</h2>
+              <div className="flex justify-between mb-2 text-gray-600">
                 <span>Subtotal</span>
                 <span>${calculateTotal().toFixed(2)}</span>
               </div>
-              <div className="flex justify-between font-bold text-lg mb-4 text-blue-800">
+              <div className="flex justify-between font-bold text-lg mb-4 text-gray-600">
                 <span>Total</span>
                 <span>${calculateTotal().toFixed(2)}</span>
               </div>
@@ -92,7 +92,7 @@ const Checkout: React.FC = () => {
 
             <div className="flex justify-center mt-9">
               <button
-                className="bg-[#3178c6] text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 w-full max-w-md"
+                className="bg-[#f0bd7a] text-white font-bold py-2 px-4 rounded-md hover:bg-[#eed9c1] w-full max-w-md"
                 onClick={() => {
                   router.push('/thank-you');
                 }}

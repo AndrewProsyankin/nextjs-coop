@@ -24,7 +24,7 @@ export default function ProductPage() {
       <Header />
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-          <h2 className="sr-only">Products</h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-10">Desk and Office</h2>
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
             {typedProductsData && typedProductsData.length > 0 && typedProductsData.map((product: Product) => (
               <div key={product.id} className="group">
@@ -42,7 +42,7 @@ export default function ProductPage() {
                 <div>
                   <button
                     onClick={() => addToCart(product)}
-                    className="mt-4 w-full rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                    className="mt-4 w-full rounded-md bg-[#98730C] px-4 py-2 text-sm font-medium text-white hover:bg-[#f0bd7a]"
                   >
                     <span>Add to cart</span>
                   </button>

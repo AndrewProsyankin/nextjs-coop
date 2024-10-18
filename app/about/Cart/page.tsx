@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 export default function Cart() {
   const [open, setOpen] = useState(true);
-  const { cartItems, removeFromCart } = useCart(); // Destructure removeFromCart from context
+  const { cartItems, removeFromCart, updateCartItem } = useCart(); // Destructure removeFromCart from context
 
   const handleOpen = () => {
     setOpen((prevState) => !prevState);
@@ -58,13 +58,19 @@ export default function Cart() {
                             </div>
                           </div>
 
-                            <p className="mt-1 text-sm text-gray-500">Qty {product.quantity}</p>
-                            
+                          <input
+                            type="number"
+                            value={product.quantity}
+                            min="1"
+                            onChange={(e) => updateCartItem(product.id, Number(e.target.value))}
+                            className="w-16 border rounded-md py-1 px-2 mr-2"
+                            style={{ color: 'gray' }}
+                          />
                             <div className="flex items-end justify-between text-sm">
                               <button
                                 type="button"
                                 onClick={() => removeFromCart(product.id)} 
-                                className="font-medium text-indigo-600 hover:text-indigo-500"
+                                className="font-medium text-[#6E4C1EFF] hover:text-[#98730C]"
                               >
                                 Remove
                               </button>
@@ -84,13 +90,13 @@ export default function Cart() {
                   <div className="mt-6">
                     <a
                       href="/about/Checkout"
-                      className="flex items-center justify-center rounded-md bg-indigo-600 px-6 py-3 text-base font-medium text-white hover:bg-indigo-700"
+                      className="flex items-center justify-center rounded-md bg-[#6E4C1EFF] px-6 py-3 text-base font-medium text-white hover:bg-[#98730C]"
                     >
                       Checkout
                     </a>
                   </div>
                   <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
-                    <button onClick={handleOpen} className="font-medium text-indigo-600 hover:text-indigo-500">
+                    <button onClick={handleOpen} className="font-medium text-[#6E4C1EFF] hover:text-[#6E4C1EFF]">
                       Continue Shopping &rarr;
                     </button>
                   </div>
