@@ -14,7 +14,7 @@ interface ProductsSearchParams {
 }
 
 // SSR: Получение данных на стороне сервера
-export const getProducts = async ({
+const getProducts = async ({
   id
 }: ProductsSearchParams) => {
   try {
