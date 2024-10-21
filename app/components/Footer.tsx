@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+
 
 const Footer = () => {
   return (
@@ -15,7 +17,15 @@ const Footer = () => {
       <Link href="/about" className="ml-4">
         About Us
       </Link>
-      <p className="text-center">© 2024 Store nA dIvAnE. All rights reserved.</p>
+      <Image
+        alt=""
+        src="/images/LOGO.jpg"
+        className="h-20 w-20 mx-auto rounded-lg"
+        width={80}
+        height={80}
+      />
+      <p className="text-center">© 2024 All rights reserved.</p>
+
     </footer>
   );
 };

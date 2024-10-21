@@ -12,6 +12,7 @@ interface Product {
 interface CartItem extends Product {
   quantity: number;
   color: string;
+  price: number;
 }
 
 // Define the context state
@@ -19,11 +20,12 @@ interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
-  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>; 
+  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
+  updateCartItem: (id: number, quantity: number) => void; // Define updateCartItem here
 }
 
 // Create the CartContext with a default value
-const CartContext = createContext<CartContextType | undefined>(undefined);
+export const CartContext = createContext<CartContextType | undefined>(undefined);
 
 // Custom hook to use the CartContext
 export const useCart = () => {
@@ -69,13 +71,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setCartItems((prevItems) =>
       prevItems.map((item) => 
         item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-      ).filter((item) => item.quantity > 0) // Удаляем товар только если количество равно 1
+      ).filter((item) => item.quantity > 0) 
     );
   };
+
+    const updateCartItem = (id: number, quantity: number) => {
+      setCartItems(prevItems =>
+        prevItems.map(item =>
+          item.id === id ? { ...item, quantity: quantity > 0 ? quantity : 1 } : item
+        )
+      );
+    };
   
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, setCartItems, removeFromCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, setCartItems, updateCartItem, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );
