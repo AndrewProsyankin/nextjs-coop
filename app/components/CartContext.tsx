@@ -22,6 +22,7 @@ interface CartContextType {
   removeFromCart: (id: number) => void;
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
   updateCartItem: (id: number, quantity: number) => void; // Define updateCartItem here
+  clearCart: ()=> void;
 }
 
 // Create the CartContext with a default value
@@ -74,6 +75,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       ).filter((item) => item.quantity > 0) 
     );
   };
+  const clearCart = () => {
+    console.log('', cartItems);
+    setCartItems([]); 
+  };
+  
 
     const updateCartItem = (id: number, quantity: number) => {
       setCartItems(prevItems =>
@@ -85,7 +91,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, setCartItems, updateCartItem, removeFromCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, setCartItems, updateCartItem, removeFromCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );
