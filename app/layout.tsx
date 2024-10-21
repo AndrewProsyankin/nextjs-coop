@@ -3,10 +3,11 @@
 import React from 'react';
 import localFont from 'next/font/local';
 import './globals.css';
-import Header from './components/Header';
+
 import Footer from './components/Footer';
 import { usePathname } from 'next/navigation';
 import { CartProvider } from './components/CartContext';
+import dynamic from 'next/dynamic';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -20,17 +21,24 @@ const geistMono = localFont({
   weight: '100 900',
 });
 
+
+
+
+const Header = dynamic(() => import('./components/Header'), {
+  ssr: false,
+});
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  
+
   return (
     <CartProvider>
       <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body className="antialiased">
           {pathname !== '/about/ProductPage' && <Header />}
           <main>{children}</main>
           <Footer />
@@ -39,3 +47,4 @@ export default function RootLayout({
     </CartProvider>
   );
 }
+

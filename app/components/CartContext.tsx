@@ -7,12 +7,12 @@ interface Product {
   price: number;
   imageSrc: string;
   imageAlt: string;
+// Убедитесь, что есть это поле
 }
 
 interface CartItem extends Product {
   quantity: number;
   color: string;
-  price: number;
 }
 
 // Define the context state
@@ -21,7 +21,7 @@ interface CartContextType {
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
-  updateCartItem: (id: number, quantity: number) => void; // Define updateCartItem here
+  updateCartItem: (id: number, quantity: number) => void;
 }
 
 // Create the CartContext with a default value
@@ -62,27 +62,28 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
-      return [...prevItems, { ...product, quantity: 1, color: '' }];
-      
+      // Устанавливаем isAdded в true при добавлении в корзину
+      return [...prevItems, { ...product, quantity: 1, color: '', isAdded: true }];
     });
   };
 
   const removeFromCart = (id: number) => {
     setCartItems((prevItems) =>
-      prevItems.map((item) => 
-        item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-      ).filter((item) => item.quantity > 0) 
+      prevItems
+        .map((item) =>
+          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+        )
+        .filter((item) => item.quantity > 0)
     );
   };
 
-    const updateCartItem = (id: number, quantity: number) => {
-      setCartItems(prevItems =>
-        prevItems.map(item =>
-          item.id === id ? { ...item, quantity: quantity > 0 ? quantity : 1 } : item
-        )
-      );
-    };
-  
+  const updateCartItem = (id: number, quantity: number) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, quantity: quantity > 0 ? quantity : 1 } : item
+      )
+    );
+  };
 
   return (
     <CartContext.Provider value={{ cartItems, addToCart, setCartItems, updateCartItem, removeFromCart }}>
