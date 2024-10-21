@@ -18,7 +18,7 @@ interface Product {
 const typedProductsData: Product[] = productsData as Product[];
 
 export default function ProductPage() {
-  const { addToCart, clearCart, cartItems } = useCart();
+  const { addToCart, cartItems } = useCart();
   const [addedProducts, setAddedProducts] = useState<number[]>([]);
 
   const handleAddToCart = (product: Product) => {
