@@ -1,19 +1,25 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import Header from './components/Header'
-import Footer from './components/Footer';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 const HomePage = () => {
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
 
   const handleNavigate = () => {
-    router.push('/about');
+    router.push('/about/Categories');
   };
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <div>  {}
-      <Header /> 
         <div className="relative z-index-1000 overflow-hidden bg-white">
           <div className="pb-80 pt-16 sm:pb-40 sm:pt-24 lg:pb-48 lg:pt-40">
             <div className="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
@@ -40,7 +46,7 @@ const HomePage = () => {
                             alt=""
                             src="/images/woman.jpg"
                             className="h-full w-full object-cover object-center"
-                            width={500} 
+                             width={500} 
                             height={500}
                           />
                         </div>
@@ -60,15 +66,14 @@ const HomePage = () => {
                 </div>
                 <button
                   onClick={handleNavigate}
-                  className="inline-block rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-center font-medium text-white hover:bg-indigo-700"
+                  className="inline-block rounded-md border border-transparent bg-[#98730C] px-8 py-3 text-center font-medium text-white hover:bg-[#f0bd7a]"
                 >
-                  Shop Collection
+                    <span>Shop Collection</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
-      <Footer />
     </div>  
   );
 };
