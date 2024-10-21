@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 export default function Cart() {
   const [open, setOpen] = useState(true);
-  const { cartItems, removeFromCart, updateCartItem } = useCart(); // Destructure removeFromCart from context
+  const { cartItems, removeFromCart, updateCartItem, clearCart } = useCart(); // Destructure removeFromCart from context
 
   const handleOpen = () => {
     setOpen((prevState) => !prevState);
@@ -87,13 +87,21 @@ export default function Cart() {
                     <p>Subtotal</p>
                     <p>${subtotal.toFixed(2)}</p>
                   </div>
-                  <div className="mt-6">
-                    <a
-                      href="/about/Checkout"
-                      className="flex items-center justify-center rounded-md bg-[#6E4C1EFF] px-6 py-3 text-base font-medium text-white hover:bg-[#98730C]"
-                    >
-                      Checkout
-                    </a>
+                  <div className="mt-6 flex items-center justify-center">
+                    <div className="flex items-center justify-center space-x-6">
+                      <a
+                        href="/about/Checkout"
+                        className="flex items-center justify-center rounded-md bg-[#6E4C1EFF] px-8 py-3 text-base font-medium text-white hover:bg-[#98730C]"
+                      >
+                        Checkout
+                      </a>
+                      <button
+                        onClick={clearCart}
+                        className="flex items-center justify-center rounded-md bg-[#6E4C1EFF] px-8 py-3 text-base font-medium text-white hover:bg-[#98730C]"
+                      >
+                        Clear Cart
+                      </button>
+                    </div>
                   </div>
                   <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                     <button onClick={handleOpen} className="font-medium text-[#6E4C1EFF] hover:text-[#6E4C1EFF]">
@@ -101,6 +109,7 @@ export default function Cart() {
                     </button>
                   </div>
                 </div>
+
               </div>
             </DialogPanel>
           </div>
