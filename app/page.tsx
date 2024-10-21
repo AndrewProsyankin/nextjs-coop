@@ -66,7 +66,7 @@ const HomePage = () => {
                 </div>
                 <button
                   onClick={handleNavigate}
-                  className="inline-block rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-center font-medium text-white hover:bg-indigo-700"
+                  className="inline-block rounded-md border border-transparent bg-[#98730C] px-8 py-3 text-center font-medium text-white hover:bg-[#f0bd7a]"
                 >
                     <span>Shop Collection</span>
                 </button>

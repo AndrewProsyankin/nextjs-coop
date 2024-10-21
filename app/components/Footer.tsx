@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white p-6 flex flex-col space-y-4">
+    <footer className="bg-[#6E4C1EFF] text-white p-6 flex flex-col space-y-4">
       <Link href="/589" className="ml-4">
         FAQ
       </Link>
@@ -19,13 +19,16 @@ const Footer = () => {
       </Link>
       <Image
         alt=""
-        src="/images/LOGO.jpg"
+        src="/images/neurobilan.jpg"
         className="h-20 w-20 mx-auto rounded-lg"
         width={80}
         height={80}
       />
-      <p className="text-center">© 2024 All rights reserved.</p>
-
+      <p className="text-center">
+        <span>© NEUROBILAN 2024</span>
+        <br />
+        <span>All rights reserved.</span>
+      </p>
     </footer>
   );
 };
