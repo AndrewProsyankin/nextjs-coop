@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ShoppingBagIcon, BellIcon, UserIcon } from '@heroicons/react/24/outline';
@@ -10,20 +10,15 @@ import Cart from '../about/Cart/page';
 const Header = () => {
   const { cartItems } = useCart();
   const totalItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-  const [mounted, setMounted] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
 
   const toggleCart = () => {
     setIsCartOpen((prevState) => !prevState);
   };
+
+  if (typeof window === 'undefined') {
+    return null;
+  }
 
   return (
     <div className="bg-white">
@@ -102,6 +97,6 @@ const Header = () => {
       </header>
     </div>
   );
-};
-
+}; 
 export default Header;
+
