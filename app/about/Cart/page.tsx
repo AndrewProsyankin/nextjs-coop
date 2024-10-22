@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useCart } from '@/app/components/CartContext';
 import Image from 'next/image';
 
@@ -99,12 +99,15 @@ export default function Cart() {
                       >
                         Checkout
                       </a>
-                      <button
-                        onClick={handleClearCart}
-                        className="flex items-center justify-center rounded-md bg-[#6E4C1EFF] px-8 py-3 text-base font-medium text-white hover:bg-[#98730C]"
-                      >
-                        Clear Cart
-                      </button>
+                      <div className="flex justify-center mt-4">
+                        <button
+                          onClick={handleClearCart}
+                          className="flex items-center space-x-2 p-2 text-gray-400 hover:text-gray-500"
+                        >
+                          <TrashIcon aria-hidden="true" className="h-6 w-6" />
+                          <span>Clear Cart</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div className="mt-6 flex justify-center text-center text-sm text-gray-500">

@@ -55,7 +55,7 @@ export default function ProductPage() {
                 <div>
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className={`mt-4 w-full rounded-md px-4 py-2 text-sm font-medium text-white ${addedProducts.includes(product.id) ? 'bg-green-500' : 'bg-[#98730C]'} hover:bg-[#f0bd7a]`}
+                    className={`mt-4 w-full rounded-md px-4 py-2 text-sm font-medium text-white ${addedProducts.includes(product.id) ? 'bg-green-500' : 'bg-[#98730C] hover:bg-[#f0bd7a]'} `}
                     disabled={addedProducts.includes(product.id)}
                   >
                     {addedProducts.includes(product.id) ? (
