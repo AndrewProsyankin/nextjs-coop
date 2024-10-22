@@ -80,6 +80,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setCartItems([]); 
   };
   
+  
 
     const updateCartItem = (id: number, quantity: number) => {
       setCartItems(prevItems =>
