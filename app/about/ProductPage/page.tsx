@@ -3,7 +3,6 @@ import productsData from '@/app/data/products.json';
 import { useCart } from '@/app/components/CartContext';
 import Header from '@/app/components/Header';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
 
 interface Product {
   id: number;
