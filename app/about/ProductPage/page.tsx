@@ -3,6 +3,7 @@ import productsData from '@/app/data/products.json';
 import { useCart } from '@/app/components/CartContext';
 import Header from '@/app/components/Header';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
 
 interface Product {
   id: number;
@@ -17,7 +18,19 @@ interface Product {
 const typedProductsData: Product[] = productsData as Product[];
 
 export default function ProductPage() {
-  const { addToCart } = useCart();
+  const { addToCart, cartItems } = useCart();
+  const [addedProducts, setAddedProducts] = useState<number[]>([]);
+
+  const handleAddToCart = (product: Product) => {
+    addToCart(product);
+    setAddedProducts(prev => [...prev, product.id]);
+  };
+
+
+  useEffect(() => {
+    const updatedAddedProducts = cartItems.map(item => item.id);
+    setAddedProducts(updatedAddedProducts);
+  }, [cartItems]);
 
   return (
     <div>
@@ -41,10 +54,15 @@ export default function ProductPage() {
                 <p className="mt-1 text-lg font-medium text-gray-900">${product.price.toFixed(2)}</p>
                 <div>
                   <button
-                    onClick={() => addToCart(product)}
-                    className="mt-4 w-full rounded-md bg-[#98730C] px-4 py-2 text-sm font-medium text-white hover:bg-[#f0bd7a]"
+                    onClick={() => handleAddToCart(product)}
+                    className={`mt-4 w-full rounded-md px-4 py-2 text-sm font-medium text-white ${addedProducts.includes(product.id) ? 'bg-green-500  ' : 'bg-[#98730C]  hover:bg-[#f0bd7a]'} `}
+                    disabled={addedProducts.includes(product.id)}
                   >
-                    <span>Add to cart</span>
+                    {addedProducts.includes(product.id) ? (
+                      <span>✓ Added</span>
+                    ) : (
+                      <span>Add to cart</span>
+                    )}
                   </button>
                 </div>
               </div>
