@@ -22,7 +22,7 @@ interface CartContextType {
   removeFromCart: (id: number) => void;
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
   updateCartItem: (id: number, quantity: number) => void; // Define updateCartItem here
-  clearCart: ()=> void;
+  clearCart: () => void;
 }
 
 // Create the CartContext with a default value
@@ -40,17 +40,21 @@ export const useCart = () => {
 // CartProvider to wrap around components where the cart state is needed
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   // Load cart items from local storage, or initialize as an empty array
-  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
-    if (typeof window !== "undefined") {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const isClient = typeof window !== "undefined";
+
+  useEffect(() => {
+    if (isClient) {
       const storedCart = localStorage.getItem('cartItems');
-      return storedCart ? JSON.parse(storedCart) : [];
+
+      storedCart && (console.log('read', JSON.parse(storedCart)), setCartItems(JSON.parse(storedCart)));
     }
-    return [];
-  });
+  }, [])
 
   // Effect to update local storage whenever cartItems changes
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (isClient) {
+      console.log('write', JSON.stringify(cartItems))
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }
   }, [cartItems]);
@@ -64,32 +68,32 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         );
       }
       return [...prevItems, { ...product, quantity: 1, color: '' }];
-      
+
     });
   };
 
   const removeFromCart = (id: number) => {
     setCartItems((prevItems) =>
-      prevItems.map((item) => 
+      prevItems.map((item) =>
         item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-      ).filter((item) => item.quantity > 0) 
+      ).filter((item) => item.quantity > 0)
     );
   };
   const clearCart = () => {
     console.log('', cartItems);
-    setCartItems([]); 
+    setCartItems([]);
   };
-  
-  
 
-    const updateCartItem = (id: number, quantity: number) => {
-      setCartItems(prevItems =>
-        prevItems.map(item =>
-          item.id === id ? { ...item, quantity: quantity > 0 ? quantity : 1 } : item
-        )
-      );
-    };
-  
+
+
+  const updateCartItem = (id: number, quantity: number) => {
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.id === id ? { ...item, quantity: quantity > 0 ? quantity : 1 } : item
+      )
+    );
+  };
+
 
   return (
     <CartContext.Provider value={{ cartItems, addToCart, setCartItems, updateCartItem, removeFromCart, clearCart }}>
