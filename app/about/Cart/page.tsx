@@ -23,7 +23,7 @@ export default function Cart() {
   };
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
     {open && (
       <Dialog open={open} onClose={handleClose} className="relative z-10">
         <DialogBackdrop className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
