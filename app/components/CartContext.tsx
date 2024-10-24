@@ -38,8 +38,11 @@ export const useCart = () => {
 };
 
 const getInitialCart = (): CartItem[] => {
-  const storedCart = localStorage.getItem('cartItems');
-  return storedCart ? JSON.parse(storedCart) : [];
+  if (typeof window !== 'undefined' && window.localStorage){
+    const storedCart = localStorage.getItem('cartItems');
+    return storedCart ? JSON.parse(storedCart) : [];
+  }
+  return [];
 };
 
 // CartProvider to wrap around components where the cart state is needed
@@ -60,9 +63,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       } else {
         updatedCart = [...prevItems, { ...product, quantity: 1, color: '' }];
       }
-      console.log('added to cart', JSON.stringify(updatedCart))
 
-      localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+      if (typeof window !== 'undefined' && window.localStorage){
+      console.log('added to cart', JSON.stringify(updatedCart))
+       localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+      }
       return updatedCart;
     });
   };
@@ -75,10 +80,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           item.id === id ? { ...item, quantity: item.quantity - 1 } : item
         )
         .filter((item) => item.quantity > 0);
-        console.log('removed from cart', JSON.stringify(cartItems))
 
-
-      localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+        if (typeof window !== 'undefined' && window.localStorage){
+        console.log('removed from cart', JSON.stringify(updatedCart))
+         localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+        }
       return updatedCart;
     });
   };
@@ -90,8 +96,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         item.id === id ? { ...item, quantity: quantity > 0 ? quantity : 1 } : item
       );
       console.log('updated cart', JSON.stringify(cartItems))
-
-      localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+      if (typeof window !== 'undefined' && window.localStorage){
+        localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+      }
       return updatedCart;
     });
   };
@@ -99,7 +106,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const clearCart = () => {
     setCartItems([]);
     console.log('removed  all from cart', JSON.stringify(cartItems))
-    localStorage.removeItem('cartItems');
+
+    if (typeof window !== 'undefined' && window.localStorage){
+     localStorage.removeItem('cartItems');
+    }
   };
 
 
