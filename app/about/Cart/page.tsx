@@ -1,16 +1,20 @@
 'use client';
 import { useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useCart } from '@/app/components/CartContext';
 import Image from 'next/image';
 
 export default function Cart() {
   const [open, setOpen] = useState(true);
-  const { cartItems, removeFromCart, updateCartItem } = useCart(); // Destructure removeFromCart from context
+  const { cartItems, removeFromCart, updateCartItem, clearCart } = useCart();
 
   const handleOpen = () => {
     setOpen((prevState) => !prevState);
+  };
+  
+  const handleClearCart = () => {
+    clearCart(); 
   };
 
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -50,22 +54,22 @@ export default function Cart() {
                           </div>
 
                           <div className="ml-4 flex flex-1 flex-col">
-                          <div className="flex justify-between font-semibold text-gray-900">
-                            <h3>{product.name}</h3>
-                            <div className="ml-4 flex flex-col items-end">
-                              <p>${(product.price * product.quantity).toFixed(2)}</p>
-                              <p className="mt-2 text-sm text-gray-600">Price ${product.price}</p>
+                            <div className="flex justify-between font-semibold text-gray-900">
+                              <h3>{product.name}</h3>
+                              <div className="ml-4 flex flex-col items-end">
+                                <p>${(product.price * product.quantity).toFixed(2)}</p>
+                                <p className="mt-2 text-sm text-gray-600">Price ${product.price}</p>
+                              </div>
                             </div>
-                          </div>
 
-                          <input
-                            type="number"
-                            value={product.quantity}
-                            min="1"
-                            onChange={(e) => updateCartItem(product.id, Number(e.target.value))}
-                            className="w-16 border rounded-md py-1 px-2 mr-2"
-                            style={{ color: 'gray' }}
-                          />
+                            <input
+                              type="number"
+                              value={product.quantity}
+                              min="1"
+                              onChange={(e) => updateCartItem(product.id, Number(e.target.value))}
+                              className="w-16 border rounded-md py-1 px-2 mr-2"
+                              style={{ color: 'gray' }}
+                            />
                             <div className="flex items-end justify-between text-sm">
                               <button
                                 type="button"
@@ -87,13 +91,24 @@ export default function Cart() {
                     <p>Subtotal</p>
                     <p>${subtotal.toFixed(2)}</p>
                   </div>
-                  <div className="mt-6">
-                    <a
-                      href="/about/Checkout"
-                      className="flex items-center justify-center rounded-md bg-[#6E4C1EFF] px-6 py-3 text-base font-medium text-white hover:bg-[#98730C]"
-                    >
-                      Checkout
-                    </a>
+                  <div className="mt-6 flex items-center justify-center">
+                    <div className="flex items-center justify-center space-x-6">
+                      <a
+                        href="/about/Checkout"
+                        className="flex items-center justify-center rounded-md bg-[#6E4C1EFF] px-8 py-3 text-base font-medium text-white hover:bg-[#98730C]"
+                      >
+                        Checkout
+                      </a>
+                      <div className="flex justify-center mt-4">
+                        <button
+                          onClick={handleClearCart}
+                          className="flex items-center space-x-2 p-2 text-gray-400 hover:text-gray-500"
+                        >
+                          <TrashIcon aria-hidden="true" className="h-6 w-6" />
+                          <span>Clear Cart</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                   <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                     <button onClick={handleOpen} className="font-medium text-[#6E4C1EFF] hover:text-[#6E4C1EFF]">
@@ -101,6 +116,7 @@ export default function Cart() {
                     </button>
                   </div>
                 </div>
+
               </div>
             </DialogPanel>
           </div>

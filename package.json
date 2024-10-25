@@ -12,7 +12,10 @@
     "@heroicons/react": "^2.1.5",
     "@stripe/stripe-js": "^4.8.0",
     "@vercel/postgres": "^0.10.0",
+    "framer-motion": "^11.11.9",
+    "install": "^0.13.0",
     "next": "^14.2.15",
+    "npm": "^10.9.0",
     "react": "^18",
     "react-dom": "^18"
   },
