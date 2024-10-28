@@ -1,17 +1,34 @@
-'use client'
-import { useEffect, useState } from 'react';
+'use client';
+import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ShoppingBagIcon, BellIcon, UserIcon } from '@heroicons/react/24/outline';
-import { useCart } from './CartContext'; 
+import { useCart } from './CartContext';
 import navbarCategories from '@/app/data/navbarCategories.json';
 import Cart from '../about/Cart/page';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const dropdownVariants = {
+  open: {
+    opacity: 1,
+    height: 'auto',
+    transition: { type: 'spring', stiffness: 200, damping: 20 }
+  },
+  closed: {
+    opacity: 0,
+    height: 0,
+    transition: { type: 'spring', stiffness: 300, damping: 30 }
+  }
+};
 
 const Header = () => {
   const { cartItems } = useCart();
   const totalItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   const [mounted, setMounted] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+
+
 
   useEffect(() => {
     setMounted(true);
@@ -23,6 +40,12 @@ const Header = () => {
 
   const toggleCart = () => {
     setIsCartOpen((prevState) => !prevState);
+  };
+  const toggleMenu = (categoryLabel: string) => {
+    setOpenMenus((prevOpenMenus) => ({
+      ...prevOpenMenus,
+      [categoryLabel]: !prevOpenMenus[categoryLabel]
+    }));
   };
 
   return (
@@ -49,28 +72,45 @@ const Header = () => {
 
             <div className="hidden lg:flex space-x-8">
               {navbarCategories.map((category) => (
-                <Menu as="div" className="relative" key={category.label}>
-                  <div>
-                    <MenuButton className="inline-flex items-center justify-center px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50">
+                <div key={category.label} className="relative">
+                  <Menu as="div" className="relative">
+                    <MenuButton
+                      className="inline-flex items-center justify-center px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50"
+                      onClick={() => toggleMenu(category.label)}
+                    >
                       {category.label}
                     </MenuButton>
-                  </div>
 
-                  <MenuItems className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    {category.items.map((item) => (
-                      <MenuItem key={item.label}>
-                        {({ active }) => (
-                          <a
-                            href={item.href}
-                            className={`block px-4 py-2 text-sm ${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                          >
-                            {item.label}
-                          </a>
-                        )}
-                      </MenuItem>
-                    ))}
-                  </MenuItems>
-                </Menu>
+                    <AnimatePresence>
+                      {openMenus[category.label] && (
+                        <motion.div
+                          initial="closed"
+                          animate="open"
+                          exit="closed"
+                          variants={dropdownVariants}
+                          className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+                        >
+                          <MenuItems>
+                            {category.items.map((item) => (
+                              <MenuItem key={item.label}>
+                                {({ active }) => (
+                                  <a
+                                    href={item.href}
+                                    className={`block px-4 py-2 text-sm ${
+                                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                                    }`}
+                                  >
+                                    {item.label}
+                                  </a>
+                                )}
+                              </MenuItem>
+                            ))}
+                          </MenuItems>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </Menu>
+                </div>
               ))}
             </div>
 
@@ -96,9 +136,7 @@ const Header = () => {
         </nav>
 
         {/* Render the Cart dialog based on isCartOpen state */}
-        {isCartOpen && (
-          <Cart />
-        )}
+        {isCartOpen && <Cart />}
       </header>
     </div>
   );
