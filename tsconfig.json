@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "./src/**/*"
-  ],
+, "app/manage-products"  ],
   "exclude": [
     "node_modules"
   ]

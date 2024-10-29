@@ -22,6 +22,22 @@ export async function GET() {
   }
 }
 
+export async function DELETE(req: Request) {
+  try{
+    const url = new URL(req.url);
+    const id = url.searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID продукта не указан' }, { status: 400 });
+    }
+      await sql`DELETE FROM products WHERE id = ${id};`;
+      return NextResponse.json({ message: 'Продукт успешно удален' }, { status: 200 });
+    } catch (error) {
+      console.error('Ошибка при удалении продукта:', error);
+      return NextResponse.json({ error: 'Ошибка при удалении продукта' }, { status: 500 });
+    }
+  }
+
 export async function POST(req: NextRequest) {
   try {
     const { name, price } = await req.json();
@@ -32,9 +48,8 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
+    
     await sql`INSERT INTO products (name, price) VALUES (${name}, ${price});`;
-
     return NextResponse.json(
       { message: 'Product added successfully' },
       { status: 201 }

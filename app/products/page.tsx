@@ -14,35 +14,25 @@ interface ProductsSearchParams {
 }
 
 // SSR: Получение данных на стороне сервера
-const getProducts = async ({
-  id
-}: ProductsSearchParams) => {
+const getProducts = async () => {
   try {
-    if (id) {
-      const { rows } = await sql<Product>`SELECT * FROM products WHERE id = ${id};`;
-      return {
-        products: rows,
-      };
-    } else {
-      const { rows } = await sql<Product>`SELECT * FROM products;`;
-      return {
-        products: rows,
-      };
-    }
-
+    const result = (await sql<Product>`SELECT * FROM products;`).rows;
+ 
+    return { products: result };
   } catch (error) {
     console.error('Error fetching products:', error);
 
-    // Возвращаем пустой массив в случае ошибки
-    return {
-      products: [],
-    };
+    // Fallback to returning empty array or previous data
+    return { products: [] };
   }
 };
 
+
+
 // Компонент для отображения товаров
-const ProductsPage = async ({ searchParams: initialSearchParams }: { searchParams: ProductsSearchParams }) => {
-  const { products } = await getProducts(initialSearchParams);
+const ProductsPage = async ({}: { searchParams: ProductsSearchParams }) => {
+  const { products } = await getProducts();
+
   return (
     <div>
       <Header />
@@ -53,7 +43,8 @@ const ProductsPage = async ({ searchParams: initialSearchParams }: { searchParam
         <ul>
           {products.map((product) => (
             <li key={product.id}>
-              {product.name} - ${product.price} - <Link href={`/products?id=${product.id}`}>View</Link>
+              {product.name} - ${product.price} - <Link href={`/products/edit/${product.id}`}>View</Link>
+
             </li>
           ))}
         </ul>
