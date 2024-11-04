@@ -1,24 +1,19 @@
+'use client'
 import ProductsList from '@/app/components/ProductsLists';
+import useSWR from 'swr';
 
-const fetchProducts = async () => {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`); 
-    if (!response.ok) {
-      throw new Error(`Ошибка HTTP: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Ошибка при получении данных с API:', error);
-    return [];
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+export default function ProductsPage() {
+  const { data: products, error } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, fetcher);
+
+  if (error) {
+    return <div>Ошибка при загрузке данных.</div>;
   }
-};
 
-export default async function ProductsPage() {
-  const products = await fetchProducts();
   return (
     <main>
-      <ProductsList products={products} />
+      <ProductsList products={products || []} />
     </main>
   );
 }

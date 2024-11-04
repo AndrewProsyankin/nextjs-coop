@@ -1,83 +1,56 @@
+// ManageProductsPage.tsx
 'use client';
+
 import { useState, FormEvent } from 'react';
+import useSWR from 'swr';
 
 interface Product {
   id: number;
   name: string;
-  price: string;
+  price: number;
 }
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 const ManageProductsPage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const { data: products, error, mutate, isLoading } = useSWR<Product[]>('/api/products', fetcher);
   const [newProduct, setNewProduct] = useState({ name: '', price: 0 });
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Функция для загрузки продуктов из БД
-  const loadProducts = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/products');
-      if (response.ok) {
-        const productsData = await response.json();
-        setProducts(productsData);
-      } else {
-        alert('Ошибка при загрузке продуктов');
-      }
-    } catch (error) {
-      console.error('Ошибка:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Функция для добавления нового продукта
   const handleAddProduct = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/products', {
+      await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newProduct),
       });
-      if (response.ok) {
-        alert('Продукт успешно добавлен');
-        setNewProduct({ name: '', price: 0 });
-        loadProducts(); // Обновляем список после добавления
-      } else {
-        alert('Ошибка при добавлении продукта');
-      }
+      setNewProduct({ name: '', price: 0 });
+      mutate(); // Обновляем данные после добавления
     } catch (error) {
-      console.error('Ошибка:', error);
+      console.error('Ошибка при добавлении продукта:', error);
     }
   };
 
-  // Функция для удаления продукта по ID
   const handleDeleteProduct = async (productId: number) => {
     try {
-      console.log(`Удаление продукта с ID: ${productId}`);
-      const response = await fetch(`/api/products?id=${productId}`, {
+      await fetch(`/api/products?id=${productId}`, {
         method: 'DELETE',
       });
-      console.log('Ответ сервера:', response);
-      if (response.ok) {
-        alert('Продукт успешно удален');
-        loadProducts(); // Обновляем список продуктов после удаления
-      } else {
-        alert('Ошибка при удалении продукта');
-      }
+      mutate(); // Обновляем данные после удаления
     } catch (error) {
-      console.error('Ошибка:', error);
+      console.error('Ошибка при удалении продукта:', error);
     }
   };
+
+  if (error) {
+    return <div>Ошибка при загрузке данных.</div>;
+  }
 
   return (
     <div>
       <h1>Manage Products</h1>
-      <button onClick={loadProducts} disabled={isLoading}>
-        {isLoading ? 'Загрузка...' : 'Загрузить продукты'}
-      </button>
       <ul>
-        {products.map((product) => (
+        {products?.map((product) => (
           <li key={product.id}>
             {product.name} - ${product.price}
             <button onClick={() => handleDeleteProduct(product.id)}>Удалить</button>
@@ -86,15 +59,13 @@ const ManageProductsPage = () => {
       </ul>
       <form onSubmit={handleAddProduct}>
         <h2>Добавить новый продукт</h2>
-        <input 
-          className="text-lg font-medium text-gray-900"
+        <input
           type="text"
           placeholder="Название продукта"
           value={newProduct.name}
           onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
         />
         <input
-          className="text-lg font-medium text-gray-900"
           type="number"
           placeholder="Цена продукта"
           value={newProduct.price}
