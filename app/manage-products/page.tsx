@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useState, FormEvent } from 'react';
 
 interface Product {
@@ -54,12 +54,14 @@ const ManageProductsPage = () => {
   // Функция для удаления продукта по ID
   const handleDeleteProduct = async (productId: number) => {
     try {
-      const response = await fetch(`/api/products/${productId}`, {
+      console.log(`Удаление продукта с ID: ${productId}`);
+      const response = await fetch(`/api/products?id=${productId}`, {
         method: 'DELETE',
       });
+      console.log('Ответ сервера:', response);
       if (response.ok) {
         alert('Продукт успешно удален');
-        loadProducts(); // обновляем список продуктов после удаления
+        loadProducts(); // Обновляем список продуктов после удаления
       } else {
         alert('Ошибка при удалении продукта');
       }
@@ -67,7 +69,6 @@ const ManageProductsPage = () => {
       console.error('Ошибка:', error);
     }
   };
-  
 
   return (
     <div>
