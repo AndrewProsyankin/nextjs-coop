@@ -13,7 +13,7 @@ interface Product {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const ManageProductsPage = () => {
-  const { data: products, error, mutate, isLoading } = useSWR<Product[]>('/api/products', fetcher);
+  const { data: products, error, mutate } = useSWR<Product[]>('/api/products', fetcher);
   const [newProduct, setNewProduct] = useState({ name: '', price: 0 });
 
   const handleAddProduct = async (e: FormEvent) => {
