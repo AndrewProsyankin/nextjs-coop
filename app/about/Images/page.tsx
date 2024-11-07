@@ -1,8 +1,7 @@
-// app/servv/ServvPage.server.tsx
 import { list } from '@vercel/blob';
 import ServvClient from '@/app/servv/page';
 
-export default async function ServvPage() {
+export default async function ServvPageServer() {
   const response = await list();
 
   return (

@@ -7,11 +7,11 @@ interface Blob {
   downloadUrl: string;
 }
 
-interface ServvPageProps {
+interface ServvClientProps {
   blobs: Blob[];
 }
 
-export default function ServvPage({ blobs }: ServvPageProps) {
+export default function ServvClient({ blobs }: ServvClientProps) {
   return (
     <div>
       <h1>Photo File Structure</h1>
