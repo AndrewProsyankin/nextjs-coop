@@ -1,5 +1,3 @@
-
-// app/servv/ServvClient.tsx
 'use client';
 
 import Image from 'next/image';
@@ -9,11 +7,11 @@ interface Blob {
   downloadUrl: string;
 }
 
-interface ServvClientProps {
+interface ServvPageProps {
   blobs: Blob[];
 }
 
-export default function ServvClient({ blobs }: ServvClientProps) {
+export default function ServvPage({ blobs }: ServvPageProps) {
   return (
     <div>
       <h1>Photo File Structure</h1>
