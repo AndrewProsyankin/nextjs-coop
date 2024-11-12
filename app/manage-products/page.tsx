@@ -1,7 +1,7 @@
-'use client';
+'use client'
+import Image from 'next/image';
 import { useState, FormEvent } from 'react';
 import useSWR from 'swr';
-import Image from 'next/image';
 
 interface Product {
   id: number;
@@ -11,75 +11,53 @@ interface Product {
 }
 
 interface Photo {
-  id: number;
+  key: string;
   url: string;
-  product_id: number;
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const ManageProductsPage = () => {
   const { data: products, error: productError, mutate: mutateProducts } = useSWR<Product[]>('/api/products', fetcher);
-  const { data: photos, mutate: mutatePhotos } = useSWR<Photo[]>('/api/photos', fetcher);
-
-  const [newProduct, setNewProduct] = useState({ name: '', price: 0, productId: 0, photo: '' });
-  const [newPhoto, setNewPhoto] = useState({ url: '', productId: 0 });
+  const { data: photos, error: photoError } = useSWR<Photo[]>('/api/photos', fetcher);  // Client-side fetching for photos
+  const [newProduct, setNewProduct] = useState({ id: 0, name: '', price: 0, photo: '' });
 
   const handleAddProduct = async (e: FormEvent) => {
     e.preventDefault();
     try {
+      const newProductData = { ...newProduct };
+
+      // Create product on server
       await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newProduct),
+        body: JSON.stringify(newProductData),
       });
-      setNewProduct({ name: '', price: 0, productId: 0, photo: '' });
-      mutateProducts(); // Refresh product list
+
+      setNewProduct({ id: 0, name: '', price: 0, photo: '' });
+      mutateProducts();
     } catch (error) {
       console.error('Error adding product:', error);
     }
   };
 
-  const handleAddPhoto = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleDeleteProduct = async (id: number) => {
     try {
-      await fetch('/api/photos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: newPhoto.url, product_id: newPhoto.productId }),
+      await fetch(`/api/products/${id}`, {
+        method: 'DELETE',
       });
-      setNewPhoto({ url: '', productId: 0 });
-      mutatePhotos(); // Refresh photo list
-    } catch (error) {
-      console.error('Error adding photo:', error);
-    }
-  };
-
-  const handleDeleteProduct = async (productId: number) => {
-    try {
-      await fetch(`/api/products?id=${productId}`, { method: 'DELETE' });
-      mutateProducts(); // Refresh product list
+      mutateProducts();
     } catch (error) {
       console.error('Error deleting product:', error);
     }
   };
 
-  const handleDeletePhoto = async (productId: number) => {
-    try {
-      await fetch(`/api/products/photo?id=${productId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ photo: null }), // Set photo to null
-      });
-      mutateProducts(); // Refresh product list after deleting photo
-    } catch (error) {
-      console.error('Error deleting product photo:', error);
-    }
+  const handleSelectImage = (photoUrl: string) => {
+    setNewProduct((prev) => ({ ...prev, photo: photoUrl }));
   };
 
-  if (productError) {
-    return <div>Error loading data.</div>;
-  }
+  if (productError) return <div>Error loading products data.</div>;
+  if (photoError) return <div>Error loading photo data.</div>;
 
   return (
     <div>
@@ -88,106 +66,93 @@ const ManageProductsPage = () => {
         {Array.isArray(products) && products.length > 0 ? (
           products.map((product) => (
             <li key={product.id} className="flex items-center space-x-4 mb-2">
-              {product.photo ? (
-                <Image
-                  src={product.photo}
-                  alt={product.name}
-                  width={64}
-                  height={64}
-                  className="object-cover"
-                  unoptimized
-                />
-              ) : (
-                <div className="w-16 h-16 bg-gray-300 flex items-center justify-center">
-                  <span>No Image</span>
-                </div>
-              )}
+              <Image
+                src={product.photo ?? '/path/to/default-image.jpg'}
+                alt={product.name}
+                width={64}
+                height={64}
+                className="object-cover"
+              />
               <div>ID: {product.id}, {product.name} - ${product.price}</div>
-              <button onClick={() => handleDeleteProduct(product.id)}>Delete Product</button>
-              {product.photo && (
-                <button onClick={() => handleDeletePhoto(product.id)}>Delete Photo</button>
-              )}
+              <button onClick={() => handleDeleteProduct(product.id)} className="text-red-600">Delete Product</button>
             </li>
           ))
         ) : (
-          <div className="w-16 h-16 bg-gray-300 flex items-center justify-center">
-            <span>No Products</span>
-          </div>
+          <p>No Products</p>
         )}
       </ul>
 
-      <h2>Photos</h2>
-      <ul className="space-y-4">
-        {photos?.map((photo) => (
-          <li key={photo.id} className="flex items-center space-x-4">
-            <Image
-              src={photo.url}
-              alt={`Product photo ${photo.product_id}`}
-              width={64}
-              height={64}
-              className="object-cover w-12 h-12 border rounded"
+      <form onSubmit={handleAddProduct} className="max-w-4xl mx-auto p-8 bg-gray-100 rounded-lg">
+        <h2 className="text-gray-700 font-semibold mb-6">Add New Product</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+          <div className="flex flex-col text-gray-700">
+            <label className="font-medium text-gray-700 mb-2">Product ID</label>
+            <input
+              type="text-gray-700"
+              value={newProduct.id}
+              onChange={(e) => setNewProduct({ ...newProduct, id: Number(e.target.value) })}
+              required
+              className="p-3 text-lg border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <div>
-              <a href={photo.url} className="text-blue-600 hover:underline">
-                {photo.url}
-              </a>
-              <div>Product ID: {photo.product_id}</div>
-            </div>
+          </div>
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700 mb-2">Product Name</label>
+            <input
+              type="text-gray-700"
+              placeholder="Product Name"
+              value={newProduct.name}
+              onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+              required
+              className="p-3 text-lg border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="flex flex-col text-gray-700">
+            <label className="font-medium text-gray-700 mb-2">Product Price</label>
+            <input
+              type="text-gray-700"
+              placeholder="Product Price"
+              value={newProduct.price}
+              onChange={(e) => setNewProduct({ ...newProduct, price: Number(e.target.value) })}
+              required
+              className="p-3 text-lg border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        {/* Dropdown to select a photo */}
+        <div className="flex flex-col mb-6 text-gray-700">
+          <label className="font-medium text-gray-700 mb-2">Product Image</label>
+          <select
+            value={newProduct.photo ?? ''}
+            onChange={(e) => handleSelectImage(e.target.value)}
+            required
+            className="p-3 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select a photo</option>
+            {photos?.map((photo) => (
+              <option key={photo.key} value={photo.url}>
+                {photo.key}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button type="submit" className="w-full p-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
+          Add Product
+        </button>
+      </form>
+
+      <h2 className="mt-8 text-2xl-gray-700 font-semibold">Uploaded Photos</h2>
+      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {photos?.map((photo) => (
+          <li key={photo.key} className="flex flex-col items-center">
+            <Image src={photo.url} alt="photo" width={64} height={64} className="object-cover" />
+            <a href={photo.url} className="text-blue-600 hover:underline mt-2">
+              {photo.key}
+            </a>
           </li>
         ))}
       </ul>
-
-      <form onSubmit={handleAddProduct}>
-        <h2>Add New Product</h2>
-        <input
-          className="text-gray-900"
-          type="text"
-          placeholder="Product Name"
-          value={newProduct.name}
-          onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-        />
-        <input
-          className="text-gray-900"
-          type="number"
-          placeholder="Product Price"
-          value={newProduct.price}
-          onChange={(e) => setNewProduct({ ...newProduct, price: Number(e.target.value) })}
-        />
-        <input
-          className="text-gray-900"
-          type="number"
-          placeholder="Product ID"
-          value={newProduct.productId}
-          onChange={(e) => setNewProduct({ ...newProduct, productId: Number(e.target.value) })}
-        />
-        <input
-          className="text-gray-900"
-          type="url"
-          placeholder="Product Photo URL"
-          value={newProduct.photo}
-          onChange={(e) => setNewProduct({ ...newProduct, photo: e.target.value })}
-        />
-        <button type="submit">Add Product</button>
-      </form>
-
-      <form onSubmit={handleAddPhoto} className="mt-6">
-        <h2>Add New Photo</h2>
-        <input
-          className="text-gray-900"
-          type="url"
-          placeholder="Photo URL"
-          value={newPhoto.url}
-          onChange={(e) => setNewPhoto({ ...newPhoto, url: e.target.value })}
-        />
-        <input
-          className="text-gray-900"
-          type="number"
-          placeholder="Product ID"
-          value={newPhoto.productId}
-          onChange={(e) => setNewPhoto({ ...newPhoto, productId: Number(e.target.value) })}
-        />
-        <button type="submit">Add Photo</button>
-      </form>
     </div>
   );
 };

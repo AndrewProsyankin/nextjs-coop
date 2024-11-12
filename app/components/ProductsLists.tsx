@@ -1,8 +1,8 @@
 'use client';
 
 import { useCart } from '@/app/components/CartContext';
-import Image from 'next/image';
 import Header from './Header';
+import Image from 'next/image';
 
 interface Product {
   id: number;

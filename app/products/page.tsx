@@ -2,11 +2,13 @@
 import { sql } from '@vercel/postgres';
 import Link from 'next/link';
 import Header from '../components/Header';
+import Image from 'next/image';
 
 interface Product {
   id: number;
   name: string;
   price: number;
+  photo: string|null;
 }
 
 interface ProductsSearchParams {
@@ -31,7 +33,8 @@ const getProducts = async () => {
 
 // Компонент для отображения товаров
 const ProductsPage = async ({}: { searchParams: ProductsSearchParams }) => {
-  const { products } = await getProducts();
+  const { products } = await getProducts(); 
+
 
   return (
     <div>
@@ -43,8 +46,12 @@ const ProductsPage = async ({}: { searchParams: ProductsSearchParams }) => {
         <ul>
           {products.map((product) => (
             <li key={product.id}>
-              {product.name} - ${product.price} - <Link href={`/products/edit/${product.id}`}>View</Link>
-
+              <div>
+                <h2>{product.name}</h2>
+                <p>${product.price}</p>
+                {product.photo && <Image src={product.photo} alt={product.name} width={200} height={200} />}
+                <Link href={`/products/edit/${product.id}`}>View</Link>
+              </div>
             </li>
           ))}
         </ul>

@@ -38,7 +38,6 @@ export async function DELETE(req: Request) {
     }
   }
 
-
 export async function POST(req: NextRequest) {
   try {
     const { name, price } = await req.json();
