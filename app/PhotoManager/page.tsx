@@ -1,4 +1,4 @@
-// components/PhotoManager.tsx
+
 'use server'
 import { list, put } from '@vercel/blob';
 import { revalidatePath } from 'next/cache';
