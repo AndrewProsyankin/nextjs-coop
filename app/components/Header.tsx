@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ShoppingBagIcon, BellIcon, UserIcon } from '@heroicons/react/24/outline';
 import { useCart } from './CartContext'; 
@@ -36,7 +35,7 @@ const Header = () => {
           <div className="flex items-center justify-between border-b border-gray-200 py-4">
             <div className="flex items-center">
               <a href="/" className="flex items-center">
-                <Image
+                <img
                   alt="Neurobilan logo"
                   src="/images/neurobilan.jpg"
                   className="h-16 w-16 rounded-lg"

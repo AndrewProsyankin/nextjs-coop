@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import Link from "next/link";
 
 
@@ -17,7 +17,7 @@ const Footer = () => {
       <Link href="/about" className="ml-4">
         About Us
       </Link>
-      <Image
+      <img
         alt=""
         src="/images/neurobilan.jpg"
         className="h-20 w-20 mx-auto rounded-lg"

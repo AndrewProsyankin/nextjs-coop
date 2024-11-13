@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useCart } from '@/app/components/CartContext';
-import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export default function Cart() {
@@ -56,7 +55,7 @@ export default function Cart() {
                           {cartItems.map((product) => (
                             <li key={product.id} className="flex py-6">
                               <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                <Image
+                                <img
                                   alt={product.imageAlt}
                                   src={product.imageSrc}
                                   className="h-full w-full object-cover object-center"
