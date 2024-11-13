@@ -2,6 +2,7 @@
 import { sql } from '@vercel/postgres';
 import Link from 'next/link';
 import Header from '../components/Header';
+import CustomImage from '../components/CustomImage';
 
 interface Product {
   id: number;
@@ -48,7 +49,7 @@ const ProductsPage = async ({}: { searchParams: ProductsSearchParams }) => {
               <div>
                 <h2>{product.name}</h2>
                 <p>${product.price}</p>
-                {product.photo && <img src={product.photo} alt={product.name} width={200} height={200} />}
+                {product.photo && <CustomImage src={product.photo} alt={product.name} width={200} height={200} />}
                 <Link href={`/products/edit/${product.id}`}>View</Link>
               </div>
             </li>

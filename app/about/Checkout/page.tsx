@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/app/components/CartContext';
+import CustomImage from '@/app/components/CustomImage';
 
 
 const Checkout: React.FC = () => {
@@ -39,7 +40,7 @@ const Checkout: React.FC = () => {
                 cartItems.map(item => (
                   <div key={item.id} className="flex flex-col md:flex-row justify-between items-center border-b border-gray-100  py-4 text-gray-600">
                     <div className="flex items-center">
-                      <img
+                      <CustomImage
                         src={item.imageSrc}
                         alt={item.imageAlt}
                         className="h-16 w-16 object-cover rounded mr-4"                              
