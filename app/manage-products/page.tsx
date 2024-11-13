@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image';
 import { useState, FormEvent } from 'react';
 import useSWR from 'swr';
 
@@ -65,7 +66,7 @@ const ManageProductsPage = () => {
         {Array.isArray(products) && products.length > 0 ? (
           products.map((product) => (
             <li key={product.id} className="flex items-center space-x-4 mb-2">
-              <img
+              <Image
                 src={product.photo ?? '/path/to/default-image.jpg'}
                 alt={product.name}
                 width={64}
@@ -145,7 +146,7 @@ const ManageProductsPage = () => {
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {photos?.map((photo) => (
           <li key={photo.key} className="flex flex-col items-center">
-            <img src={photo.url} alt="photo" width={64} height={64} className="object-cover" />
+            <Image src={photo.url} alt="photo" width={64} height={64} className="object-cover" />
             <a href={photo.url} className="text-blue-600 hover:underline mt-2">
               {photo.key}
             </a>

@@ -2,6 +2,7 @@
 
 import { useCart } from '@/app/components/CartContext';
 import Header from './Header';
+import Image from 'next/image';
 
 
 interface Product {
@@ -38,7 +39,7 @@ interface ProductsListProps {
                       return (
                         <div key={product.id} className="group">
                           <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                            <img
+                            <Image
                               src={product.imageSrc}
                               alt={product.imageAlt}
                               className="h-full w-full object-cover object-center group-hover:opacity-75"
