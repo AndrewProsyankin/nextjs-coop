@@ -26,6 +26,7 @@ interface ProductFormProps {
   onSelectImage: (photoUrl: string) => void;
 }
 
+
 const fetcher = (url: string) => fetch(url).then((res) => {
   if (!res.ok) throw new Error('Network response was not ok');
   return res.json();
@@ -33,12 +34,8 @@ const fetcher = (url: string) => fetch(url).then((res) => {
 
 const ManageProductsPage = () => {
   const { data: products, error: productError, mutate: mutateProducts } = useSWR<Product[]>('/api/products', fetcher);
-  const { data: photos, error: photoError, mutate: mutatePhotos } = useSWR<Photo[]>('/api/photos', fetcher) as {
-    data: Photo[] | undefined;
-    error: Error | null; 
-    mutate: () => void;
-  };
-  
+  const { data: photos, error: photoError, mutate: mutatePhotos } = useSWR<Photo[]>('/api/photos', fetcher);
+
   const [newProduct, setNewProduct] = useState<Product>({ id: 0, name: '', price: 0, photo: null, image_url: '/path/to/default-image.jpg' });
 
   const handleAddProduct = async (e: FormEvent) => {
