@@ -20,7 +20,7 @@ const CustomImage: React.FC<CustomImageProps> = ({ image_url, alt, width, height
         alt={alt}
         layout="fill"
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        objectFit="cover"
+        style={{ objectFit: 'cover' }}
         className={className}
         loading="lazy"
       />
