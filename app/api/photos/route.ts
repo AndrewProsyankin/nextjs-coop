@@ -11,6 +11,11 @@ export async function GET() {
   try {
     const response = await list();
 
+    // Ensure that response.blobs is correctly formatted
+    if (!response.blobs || response.blobs.length === 0) {
+      return NextResponse.json({ message: 'No photos found' }, { status: 404 });
+    }
+
     // Assuming the response contains a `blobs` array
     const items: BlobItem[] = response.blobs.map((item: { pathname: string; downloadUrl: string }) => ({
       key: item.pathname,  // Assuming `pathname` represents the file's key
@@ -39,6 +44,8 @@ export async function POST(req: NextResponse) {
         { status: 400 }
       );
     }
+
+    // Optionally add file validation, e.g., check for file size or type
 
     // Upload the file to blob storage
     const blob = await put(imageFile.name, imageFile, { access: 'public' });

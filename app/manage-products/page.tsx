@@ -10,7 +10,7 @@ interface Product {
   price: number;
   image_url: string;
   photo: string | null;
-  [key: string]: string | number | null; 
+  [key: string]: string | number | null;
 }
 
 interface Photo {
@@ -26,51 +26,55 @@ interface ProductFormProps {
   onSelectImage: (photoUrl: string) => void;
 }
 
-
-const fetcher = (url: string) => fetch(url).then((res) => {
-  if (!res.ok) throw new Error('Network response was not ok');
-  return res.json();
-});
+const fetcher = (url: string) =>
+  fetch(url).then((res) => {
+    if (!res.ok) throw new Error('Network response was not ok');
+    return res.json();
+  });
 
 const ManageProductsPage = () => {
   const { data: products, error: productError, mutate: mutateProducts } = useSWR<Product[]>('/api/products', fetcher);
   const { data: photos, error: photoError, mutate: mutatePhotos } = useSWR<Photo[]>('/api/photos', fetcher);
 
-  const [newProduct, setNewProduct] = useState<Product>({ id: 0, name: '', price: 0, photo: null, image_url: '/path/to/default-image.jpg' });
+  const [newProduct, setNewProduct] = useState<Product>({
+    id: 0,
+    name: '',
+    price: 0,
+    photo: null,
+    image_url: '/path/to/default-image.jpg',
+  });
 
   const handleAddProduct = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const productWithImage = { ...newProduct, image_url: newProduct.image_url || '/path/to/default-image.jpg' }; 
+      const productWithImage = { ...newProduct, image_url: newProduct.image_url || '/path/to/default-image.jpg' };
       await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(productWithImage),
       });
-      setNewProduct({ id: 0, name: '', price: 0, photo: null, image_url: '/path/to/default-image.jpg' }); 
+      setNewProduct({ id: 0, name: '', price: 0, photo: null, image_url: '/path/to/default-image.jpg' });
       mutateProducts();
     } catch (error) {
       console.error('Error adding product:', error);
     }
   };
-  
 
   const handleDeleteProduct = async (id: number) => {
     try {
       await fetch(`/api/products?id=${id}`, {
         method: 'DELETE',
       });
-      mutateProducts(); 
+      mutateProducts();
       await fetch(`/api/photos/${id}`, {
         method: 'DELETE',
       });
-      mutatePhotos(); 
+      mutatePhotos();
     } catch (error) {
       console.error('Error deleting product:', error);
     }
   };
-  
-  
+
   const handleSelectImage = (photoUrl: string) => {
     setNewProduct((prev) => ({ ...prev, photo: photoUrl }));
   };
@@ -100,7 +104,7 @@ const ManageProductsPage = () => {
   );
 };
 
-const ProductList = ({ products, onDelete }: { products: Product[] | undefined, onDelete: (id: number) => void }) => (
+const ProductList = ({ products, onDelete }: { products: Product[] | undefined; onDelete: (id: number) => void }) => (
   <div className="max-w-4xl mx-auto p-8 bg-gray-200 rounded-lg mb-12 space-y-4">
     <h2 className="text-center text-gray-700 font-semibold mb-6">Product List</h2>
     <ul className="space-y-4">
@@ -135,7 +139,6 @@ const ProductList = ({ products, onDelete }: { products: Product[] | undefined, 
   </div>
 );
 
-
 const ProductForm: React.FC<ProductFormProps> = ({ newProduct, setNewProduct, photos, onSubmit, onSelectImage }) => (
   <div className="max-w-4xl mx-auto p-8 bg-gray-200 rounded-lg mb-12">
     <h2 className="text-center text-gray-700 font-semibold mb-6">Add New Product</h2>
@@ -146,7 +149,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ newProduct, setNewProduct, ph
             <label className="font-medium text-gray-700 mb-2">Product {field.charAt(0).toUpperCase() + field.slice(1)}</label>
             <input
               type="text"
-              value={newProduct[field as keyof Product] ?? ''} // Use fallback for null values
+              value={newProduct[field as keyof Product] ?? ''}
               onChange={(e) =>
                 setNewProduct({
                   ...newProduct,
@@ -181,7 +184,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ newProduct, setNewProduct, ph
     </form>
   </div>
 );
-
 
 const UploadedPhotos = ({ photos }: { photos: Photo[] | undefined }) => (
   <div className="max-w-4xl mx-auto p-8 bg-gray-200 rounded-lg mb-8">
