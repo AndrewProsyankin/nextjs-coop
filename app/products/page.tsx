@@ -9,6 +9,7 @@ interface Product {
   name: string;
   price: number;
   photo: string|null;
+  image_url: string;
 }
 
 interface ProductsSearchParams {
@@ -49,7 +50,7 @@ const ProductsPage = async ({}: { searchParams: ProductsSearchParams }) => {
               <div>
                 <h2>{product.name}</h2>
                 <p>${product.price}</p>
-                {product.photo && <CustomImage src={product.photo} alt={product.name} width={200} height={200} />}
+                {product.photo && <CustomImage image_url={product.photo} alt={product.name} width={200} height={200} />}
                 <Link href={`/products/edit/${product.id}`}>View</Link>
               </div>
             </li>

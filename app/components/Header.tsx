@@ -5,7 +5,7 @@ import { ShoppingBagIcon, BellIcon, UserIcon } from '@heroicons/react/24/outline
 import { useCart } from './CartContext'; 
 import navbarCategories from '@/app/data/navbarCategories.json';
 import Cart from '../about/Cart/page';
-import CustomImage from './CustomImage';
+import Image from 'next/image';
 
 const Header = () => {
   const { cartItems } = useCart();
@@ -36,7 +36,7 @@ const Header = () => {
           <div className="flex items-center justify-between border-b border-gray-200 py-4">
             <div className="flex items-center">
               <a href="/" className="flex items-center">
-                <CustomImage
+                <Image
                   alt="Neurobilan logo"
                   src="/images/neurobilan.jpg"
                   className="h-16 w-16 rounded-lg"

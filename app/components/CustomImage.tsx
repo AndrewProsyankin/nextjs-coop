@@ -1,25 +1,29 @@
-import dynamic from 'next/dynamic';
-
-const ImageComponent = dynamic(() => import('next/image'), { ssr: false });
+import Image from 'next/image';
 
 interface CustomImageProps {
-  src: string;
+  image_url: string | null;
   alt: string;
   width: number;
   height: number;
   className?: string;
 }
 
-const CustomImage: React.FC<CustomImageProps> = ({ src, alt, width, height, className }) => {
+const CustomImage: React.FC<CustomImageProps> = ({ image_url, alt, width, height, className }) => {
+  if (!image_url) {
+    return <div className="w-full h-full bg-gray-200 flex items-center justify-center">No Image</div>;
+  }
+
   return (
-    <ImageComponent
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      className={className}
-      loading="lazy" 
-    />
+    <div style={{ width: `${width}px`, height: `${height}px`, position: 'relative' }}>
+      <Image
+        src={image_url}
+        alt={alt}
+        layout="fill"
+        objectFit="cover"
+        className={className}
+        loading="lazy"
+      />
+    </div>
   );
 };
 
