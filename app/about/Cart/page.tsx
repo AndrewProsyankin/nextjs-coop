@@ -44,7 +44,7 @@ export default function Cart() {
                         <DialogTitle className="text-lg font-medium text-gray-900">Shopping cart</DialogTitle>
                         <button
                           type="button"
-                          onClick={handleClose}  // Запуск анимации при закрытии
+                          onClick={handleClose}  
                           className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
                         >
                           <XMarkIcon aria-hidden="true" className="h-6 w-6" />
@@ -57,12 +57,13 @@ export default function Cart() {
                             <li key={product.id} className="flex py-6">
                               <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                 <CustomImage
-                                  alt={product.imageAlt}
-                                  src={product.imageSrc}
-                                  className="h-full w-full object-cover object-center"
-                                  width={500} 
-                                  height={500}
+                                  alt={product.name}
+                                  image_url={product.image_url}
+                                  className="object-center group-hover:opacity-75"
+                                  width={200}  
+                                  height={200} 
                                 />
+
                               </div>
 
                               <div className="ml-4 flex flex-1 flex-col">

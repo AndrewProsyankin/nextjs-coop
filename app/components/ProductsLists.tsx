@@ -1,17 +1,15 @@
 'use client';
-
 import { useCart } from '@/app/components/CartContext';
 import Header from './Header';
 import CustomImage from './CustomImage';
-
-
 
 interface Product {
   id: number;
   name: string;
   price: number;
-  imageSrc: string;
+  image_url: string;
   imageAlt: string;
+  imageSrc: string;
 }
 
 interface ProductsListProps {
@@ -22,9 +20,9 @@ interface ProductsListProps {
     const { addToCart, cartItems } = useCart();
   
     const handleAddToCart = (product: Product) => {
-      addToCart(product);
+      addToCart(product); 
     };
-  
+    
     return (
       <>
         <Header />
@@ -38,18 +36,19 @@ interface ProductsListProps {
                     const isInCart = cartItems.some((item) => item.id === product.id);
                     return (
                       <div key={product.id} className="group">
-                        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                          {/* Проверяем наличие src перед рендером CustomImage */}
-                          {product.imageSrc ? (
+                        <div className="overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                          {/* Use fixed size for CustomImage */}
+                          {product.image_url ? (
                             <CustomImage
-                              src={product.imageSrc}
-                              alt={product.imageAlt}
-                              className="h-full w-full object-cover object-center group-hover:opacity-75"
-                              width={500}
-                              height={500}
+                              alt={product.name}
+                              image_url={product.image_url}
+                              className="group-hover:opacity-75"
+                              width={300} 
+                              height={200} 
                             />
+
                           ) : (
-                            <div className="h-full w-full bg-gray-200 flex items-center justify-center">
+                            <div className="bg-gray-200 flex items-center justify-center">
                               <span>No Image</span>
                             </div>
                           )}
@@ -81,5 +80,6 @@ interface ProductsListProps {
         </div>
       </>
     );
+  
   }
   

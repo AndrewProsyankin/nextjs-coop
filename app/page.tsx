@@ -1,8 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import CustomImage from './components/CustomImage';
 
 const HomePage = () => {
   const router = useRouter();
@@ -43,7 +43,7 @@ const HomePage = () => {
                     <div className="flex items-center space-x-6 lg:space-x-8">
                       <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
                         <div className="h-64 w-44 overflow-hidden rounded-lg sm:opacity-0 lg:opacity-100">
-                          <CustomImage
+                          <Image
                             alt=""
                             src="/images/woman.jpg"
                             className="h-full w-full object-cover object-center"
@@ -52,7 +52,7 @@ const HomePage = () => {
                           />
                         </div>
                         <div className="h-64 w-44 overflow-hidden rounded-lg sm:opacity-0 lg:opacity-100">
-                          <CustomImage
+                          <Image
                             alt=""
                             src="/images/krasnyi_cardigan.jpg"
                             className="h-full w-full object-cover object-center"
