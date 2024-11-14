@@ -62,10 +62,9 @@ export default function Cart() {
                                   className="group-hover:opacity-75"
                                   width={94.4} 
                                   height={94.4}  
+
                                 />
-
                               </div>
-
                               <div className="ml-4 flex flex-1 flex-col">
                                 <div className="flex justify-between font-semibold text-gray-900">
                                   <h3>{product.name}</h3>
