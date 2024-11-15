@@ -1,38 +1,38 @@
-// app/PhotoManager/server.ts
-'use server';
+// app/PhotoManager/page.tsx
+import { GetServerSideProps } from 'next';
+import { getPhotos } from './server';
 
-import { list, put } from '@vercel/blob';
-import { revalidatePath } from 'next/cache';
-import sharp from 'sharp';
-
-interface BlobItem {
+interface Photo {
   key: string;
   url: string;
 }
 
-export async function getPhotos(): Promise<BlobItem[]> {
-  const response = await list();
-  return response.blobs.map((item: { pathname: string; downloadUrl: string }) => ({
-    key: item.pathname,
-    url: item.downloadUrl,
-  }));
+interface PhotoManagerPageProps {
+  photos: Photo[];
 }
 
-export async function uploadImage(formData: FormData): Promise<string> {
-  const imageFile = formData.get('image') as File;
-  if (!imageFile) throw new Error('No file selected');
+export default function PhotoManagerPage({ photos }: PhotoManagerPageProps) {
+  return (
+    <div>
+      <h1>Photo Manager</h1>
+      <div>
+        {photos.map((photo) => (
+          <div key={photo.key}>
+            <img src={photo.url} alt={photo.key} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
+// Получаем фотографии на сервере перед рендерингом
+export const getServerSideProps: GetServerSideProps = async () => {
   try {
-    const buffer = await imageFile.arrayBuffer();
-    const convertedImage = await sharp(Buffer.from(buffer))
-      .jpeg({ quality: 80 })
-      .toBuffer();
-
-    const blob = await put(imageFile.name.replace(/\.[^.]+$/, '.jpg'), convertedImage, { access: 'public' });
-    revalidatePath('/');
-    return blob.url;
+    const photos = await getPhotos();
+    return { props: { photos } };
   } catch (error) {
-    console.error('Error uploading image:', error);
-    throw new Error('Failed to upload image');
+    console.error('Error fetching photos:', error);
+    return { props: { photos: [] } };
   }
-}
+};
