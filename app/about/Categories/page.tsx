@@ -1,6 +1,6 @@
 'use client';
 
-import CustomImage from '@/app/components/CustomImage';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';  
 
 
@@ -50,7 +50,7 @@ export default function CollectionsPage() {
                     onClick={() => handleNavigate(callout.href)} 
                     className="relative h-80 w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-64 cursor-pointer"
                   >
-                    <CustomImage
+                    <Image
                       alt={callout.imageAlt}
                       src={callout.imageSrc}
                       className="h-full w-full object-cover object-center"

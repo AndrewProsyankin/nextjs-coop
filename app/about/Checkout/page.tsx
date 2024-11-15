@@ -1,24 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/app/components/CartContext';
 import CustomImage from '@/app/components/CustomImage';
 
-
 const Checkout: React.FC = () => {
-  const { cartItems, removeFromCart, updateCartItem } = useCart(); 
-  const [isMounted, setIsMounted] = useState(false); // Проверка рендеринга на клиенте
+  const { cartItems, removeFromCart, updateCartItem } = useCart();
   const router = useRouter();
-
-  // Включаем рендеринг только после того, как компонент смонтирован на клиенте
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return null; // Пока компонент не смонтирован на клиенте, ничего не рендерим
-  }
 
   const calculateTotal = () => {
     return cartItems?.length ? cartItems.reduce((total, item) => total + item.price * item.quantity, 0) : 0;
@@ -38,14 +26,14 @@ const Checkout: React.FC = () => {
             <div>
               {cartItems?.length ? (
                 cartItems.map(item => (
-                  <div key={item.id} className="flex flex-col md:flex-row justify-between items-center border-b border-gray-100  py-4 text-gray-600">
+                  <div key={item.id} className="flex flex-col md:flex-row justify-between items-center border-b border-gray-100 py-4 text-gray-600">
                     <div className="flex items-center">
                       <CustomImage
-                        src={item.imageSrc}
-                        alt={item.imageAlt}
-                        className="h-16 w-16 object-cover rounded mr-4"                              
-                        width={500} 
-                        height={500}
+                        image_url={item.image_url} 
+                        alt={item.name}
+                        className="h-24 w-24 overflow-hidden rounded-md border border-gray-200 mr-4"
+                        width={94.4}
+                        height={94.4}
                       />
                       <div>
                         <h3 className="text-md font-medium text-gray-900">{item.name}</h3>
@@ -94,9 +82,7 @@ const Checkout: React.FC = () => {
             <div className="flex justify-center mt-9">
               <button
                 className="bg-[#f0bd7a] text-white font-bold py-2 px-4 rounded-md hover:bg-[#eed9c1] w-full max-w-md"
-                onClick={() => {
-                  router.push('/thank-you');
-                }}
+                onClick={() => router.push('/thank-you')}
               >
                 Proceed to Payment
               </button>
@@ -104,7 +90,6 @@ const Checkout: React.FC = () => {
           </div>
         </div>
       </main>
-
     </div>
   );
 };

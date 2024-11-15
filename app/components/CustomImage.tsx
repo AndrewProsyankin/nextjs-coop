@@ -14,14 +14,13 @@ const CustomImage: React.FC<CustomImageProps> = ({ image_url, alt, width, height
   }
 
   return (
-    <div style={{ width: `${width}px`, height: `${height}px`, position: 'relative' }}>
+    <div className="relative" style={{ width: width || '100%', height: height || 'auto' }}>
       <Image
         src={image_url}
         alt={alt}
-        layout="fill"
+        fill
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        style={{ objectFit: 'cover' }}
-        className={className}
+        className={`object-cover ${className}`}
         loading="lazy"
       />
     </div>
