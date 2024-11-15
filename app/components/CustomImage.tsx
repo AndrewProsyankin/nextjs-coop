@@ -1,3 +1,4 @@
+'use client'
 import Image from 'next/image';
 
 interface CustomImageProps {
@@ -9,17 +10,13 @@ interface CustomImageProps {
 }
 
 const CustomImage: React.FC<CustomImageProps> = ({ image_url, alt, width, height, className }) => {
-  if (!image_url) {
-    return <div className="w-full h-full bg-gray-200 flex items-center justify-center">No Image</div>;
-  }
-
   return (
     <div className="relative" style={{ width: width || '100%', height: height || 'auto' }}>
       <Image
-        src={image_url}
+        src={image_url || '/path/to/placeholder-image.jpg'} 
         alt={alt}
-        fill
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        width={width}
+        height={height}
         className={`object-cover ${className}`}
         loading="lazy"
       />
