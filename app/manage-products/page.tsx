@@ -107,7 +107,7 @@ const ProductList = ({ products, onDelete }: { products: Product[] | undefined; 
           <li key={product.id} className="flex items-center justify-between p-4 bg-white rounded-md shadow-md">
             <div className="flex items-center space-x-4">
               <CustomImage
-                image_url={product.image_url || '/path/to/default-image.jpg'}
+                image_url={product.image_url} // No need for fallback in here, handle it inside CustomImage
                 alt={product.name}
                 width={200}
                 height={200}
