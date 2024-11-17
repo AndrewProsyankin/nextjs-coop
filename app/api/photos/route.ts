@@ -1,4 +1,4 @@
-import { list, put, del } from '@vercel/blob'; // Ensure `del` is imported for deletion
+import { list, put, del } from '@vercel/blob';
 import { NextResponse } from 'next/server';
 
 export interface BlobItem {
@@ -6,87 +6,70 @@ export interface BlobItem {
   url: string;
 }
 
-// GET function to fetch the list of images
+// GET: Получение списка файлов
 export async function GET() {
   try {
     const response = await list();
-
-    // Ensure that response.blobs is correctly formatted
-    if (!response.blobs || response.blobs.length === 0) {
-      return NextResponse.json({ message: 'No photos found' }, { status: 404 });
-    }
-
-    // Assuming the response contains a `blobs` array
-    const items: BlobItem[] = response.blobs.map((item: { pathname: string; downloadUrl: string }) => ({
-      key: item.pathname,  // Assuming `pathname` represents the file's key
-      url: item.downloadUrl,  // Assuming `downloadUrl` is the public URL
+    const items: BlobItem[] = response.blobs.map((item) => ({
+      key: item.pathname,
+      url: item.downloadUrl,
     }));
 
     return NextResponse.json(items, { status: 200 });
   } catch (error) {
-    console.error("Error fetching photos:", error);
+    console.error('Error fetching photos:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch photos from storage.' },
+      { error: 'Failed to fetch photos from storage' },
       { status: 500 }
     );
   }
 }
 
-// POST function to upload a new file
-export async function POST(req: NextResponse) {
+// POST: Загрузка нового файла
+export async function POST(req: Request) {
   try {
     const formData = await req.formData();
     const imageFile = formData.get('image') as File;
 
     if (!imageFile) {
-      return NextResponse.json(
-        { error: 'No file selected' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No file selected' }, { status: 400 });
     }
 
-    // Optionally add file validation, e.g., check for file size or type
+    const allowedTypes = ['image/jpeg', 'image/png'];
+    const maxSize = 5 * 1024 * 1024; // 5 MB
 
-    // Upload the file to blob storage
+    if (!allowedTypes.includes(imageFile.type)) {
+      return NextResponse.json({ error: 'Unsupported file type' }, { status: 400 });
+    }
+    if (imageFile.size > maxSize) {
+      return NextResponse.json({ error: 'File size exceeds limit' }, { status: 400 });
+    }
+
     const blob = await put(imageFile.name, imageFile, { access: 'public' });
-
-    return NextResponse.json(
-      { message: 'File successfully uploaded', blob },
-      { status: 201 }
-    );
+    return NextResponse.json({ message: 'File uploaded successfully', blob }, { status: 201 });
   } catch (error) {
-    console.error("Error uploading image:", error);
+    console.error('Error uploading image:', error);
     return NextResponse.json(
-      { error: 'Internal server error during file upload.' },
+      { error: 'Failed to upload file' },
       { status: 500 }
     );
   }
 }
 
-// DELETE function to remove a file
-export async function DELETE(req: NextResponse) {
+// DELETE: Удаление файла
+export async function DELETE(req: Request) {
   try {
-    const formData = await req.formData();
-    const key = formData.get('key') as string;
-
+    const { key } = await req.json();
     if (!key) {
-      return NextResponse.json(
-        { error: 'No file specified for deletion' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'File key is missing' }, { status: 400 });
     }
 
-    // Delete the file from blob storage
     await del([key]);
-
-    return NextResponse.json(
-      { message: 'File successfully deleted' },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: 'File deleted successfully' }, { status: 200 });
   } catch (error) {
-    console.error("Error deleting image:", error);
+    console.error('Error deleting file:', error);
     return NextResponse.json(
-      { error: 'Failed to delete file from storage.' },
+      { error: 'Failed to delete file' },
       { status: 500 }
     );
   }

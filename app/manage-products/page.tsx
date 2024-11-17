@@ -34,14 +34,14 @@ const fetcher = (url: string) =>
 
 const ManageProductsPage = () => {
   const { data: products, error: productError, mutate: mutateProducts } = useSWR<Product[]>('/api/products', fetcher);
-  const { data: photos, error: photoError, mutate: mutatePhotos } = useSWR<Photo[]>('/api/photos', fetcher);
+  const { data: photos, error: photoError } = useSWR<Photo[]>('/api/photos', fetcher);
 
   const [newProduct, setNewProduct] = useState<Product>({
     id: 0,
     name: '',
     price: 0,
     photo: null,
-    image_url: '/path/to/default-image.jpg',
+    image_url: '',
   });
 
   const handleAddProduct = async (e: FormEvent) => {
@@ -53,7 +53,7 @@ const ManageProductsPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(productWithImage),
       });
-      setNewProduct({ id: 0, name: '', price: 0, photo: null, image_url: '/path/to/default-image.jpg' });
+      setNewProduct({ id: 0, name: '', price: 0, photo: null, image_url: '' });
       mutateProducts();
     } catch (error) {
       console.error('Error adding product:', error);
@@ -62,25 +62,19 @@ const ManageProductsPage = () => {
 
   const handleDeleteProduct = async (id: number) => {
     try {
-      await fetch(`/api/products?id=${id}`, {
-        method: 'DELETE',
-      });
+      await fetch(`/api/products?id=${id}`, { method: 'DELETE' });
       mutateProducts();
-      await fetch(`/api/photos/${id}`, {
-        method: 'DELETE',
-      });
-      mutatePhotos();
     } catch (error) {
       console.error('Error deleting product:', error);
     }
   };
 
   const handleSelectImage = (photoUrl: string) => {
-    setNewProduct((prev) => ({ ...prev, photo: photoUrl }));
+    setNewProduct((prev) => ({ ...prev, image_url: photoUrl, photo: photoUrl }));
   };
 
-  if (productError) return <div>Error loading products data.</div>;
-  if (photoError) return <div>Error loading photo data.</div>;
+  if (productError) return <ErrorNotification message="Error loading products data." />;
+  if (photoError) return <ErrorNotification message="Error loading photo data." />;
 
   return (
     <div className="bg-gray-100 min-h-screen py-8">
@@ -107,13 +101,13 @@ const ManageProductsPage = () => {
 const ProductList = ({ products, onDelete }: { products: Product[] | undefined; onDelete: (id: number) => void }) => (
   <div className="max-w-4xl mx-auto p-8 bg-gray-200 rounded-lg mb-12 space-y-4">
     <h2 className="text-center text-gray-700 font-semibold mb-6">Product List</h2>
-    <ul className="space-y-4">
-      {products && products.length > 0 ? (
-        products.map((product) => (
+    {products && products.length > 0 ? (
+      <ul className="space-y-4">
+        {products.map((product) => (
           <li key={product.id} className="flex items-center justify-between p-4 bg-white rounded-md shadow-md">
             <div className="flex items-center space-x-4">
               <CustomImage
-                image_url={product.image_url ?? '/path/to/default-image.jpg'}
+                image_url={product.image_url || '/path/to/default-image.jpg'}
                 alt={product.name}
                 width={200}
                 height={200}
@@ -131,11 +125,11 @@ const ProductList = ({ products, onDelete }: { products: Product[] | undefined; 
               Delete Product
             </button>
           </li>
-        ))
-      ) : (
-        <p className="text-gray-600">No Products</p>
-      )}
-    </ul>
+        ))}
+      </ul>
+    ) : (
+      <p className="text-gray-600">No Products</p>
+    )}
   </div>
 );
 
@@ -146,7 +140,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ newProduct, setNewProduct, ph
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {['name', 'price'].map((field, index) => (
           <div key={index} className="flex flex-col text-gray-700">
-            <label className="font-medium text-gray-700 mb-2">Product {field.charAt(0).toUpperCase() + field.slice(1)}</label>
+            <label className="font-medium text-gray-700 mb-2">
+              Product {field.charAt(0).toUpperCase() + field.slice(1)}
+            </label>
             <input
               type="text"
               value={newProduct[field as keyof Product] ?? ''}
@@ -163,7 +159,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ newProduct, setNewProduct, ph
         ))}
       </div>
       <div className="flex flex-col mb-6 text-gray-700">
-        <label className="font-medium text-gray-700 mb-2">Product Image</label>
+        <label className="font-medium text-gray-700 mb-2">Select Product Photo</label>
         <select
           value={newProduct.photo ?? ''}
           onChange={(e) => onSelectImage(e.target.value)}
@@ -171,7 +167,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ newProduct, setNewProduct, ph
           className="p-3 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Select a photo</option>
-          {photos?.map((photo: Photo) => (
+          {photos?.map((photo) => (
             <option key={photo.key} value={photo.url}>
               {photo.key}
             </option>
@@ -186,8 +182,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ newProduct, setNewProduct, ph
 );
 
 const UploadedPhotos = ({ photos }: { photos: Photo[] | undefined }) => (
-  <div className="max-w-4xl mx-auto p-8 bg-gray-200 rounded-lg mb-8">
-    <h2 className="text-center text-gray-700 font-semibold mb-6">Uploaded Photos</h2>
+  <div className="max-w-4xl mx-auto p-8 bg-gray-200 rounded-lg mb-6">
+    <h2 className="text-center text-gray-700 font-semibold mb-12">Uploaded Photos</h2>
     <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
       {photos?.map((photo) => (
         <li key={photo.key} className="flex flex-col items-center p-4 bg-white rounded-md shadow-md">
@@ -199,6 +195,10 @@ const UploadedPhotos = ({ photos }: { photos: Photo[] | undefined }) => (
       ))}
     </ul>
   </div>
+);
+
+const ErrorNotification = ({ message }: { message: string }) => (
+  <div className="bg-red-500 text-white p-4 rounded-md text-center">{message}</div>
 );
 
 export default ManageProductsPage;
