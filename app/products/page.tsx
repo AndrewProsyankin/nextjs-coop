@@ -1,7 +1,6 @@
 // pages/products.tsx
 import { sql } from '@vercel/postgres';
 import Link from 'next/link';
-import Header from '../components/Header';
 import CustomImage from '../components/CustomImage';
 
 interface Product {
@@ -33,13 +32,11 @@ const getProducts = async () => {
 
 
 // Компонент для отображения товаров
-const ProductsPage = async ({}: { searchParams: ProductsSearchParams }) => {
+export default async () => {
   const { products } = await getProducts(); 
-
 
   return (
     <div>
-      <Header />
       <h1>Products</h1>
       {products.length === 0 ? (
         <p>No products available</p>
@@ -61,4 +58,5 @@ const ProductsPage = async ({}: { searchParams: ProductsSearchParams }) => {
   );
 };
 
-export default ProductsPage;
+
+
