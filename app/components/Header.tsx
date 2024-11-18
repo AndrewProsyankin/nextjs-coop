@@ -1,11 +1,11 @@
 'use client'
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ShoppingBagIcon, BellIcon, UserIcon } from '@heroicons/react/24/outline';
 import { useCart } from './CartContext'; 
 import navbarCategories from '@/app/data/navbarCategories.json';
 import Cart from '../about/Cart/page';
+import Image from 'next/image';
 
 const Header = () => {
   const { cartItems } = useCart();
