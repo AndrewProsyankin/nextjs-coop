@@ -24,6 +24,12 @@ interface ProductForm {
   onSelectImage: (photoUrl: string) => void;
 }
 
+interface ProductListProps {
+  products: Product[]; // Array of products
+  onDelete: (id: number) => void; // Function to handle product deletion
+  onAddPhoto: (id: number) => void; // Function to handle adding a photo
+}
+
 
 const fetcher = (url: string) =>
   fetch(url).then((res) => {
@@ -104,6 +110,8 @@ const ManageProductsPage = () => {
     setNewProduct((prev) => ({ ...prev, image_url: photoUrl }));
   };
 
+  const safeProducts = products || [];
+
   if (productError) return 'Error loading products data.';
   if (photoError) return 'Error loading photo data.';
 
@@ -113,7 +121,7 @@ const ManageProductsPage = () => {
 
       {/* Список товаров */}
       <ProductList
-        products={products}
+        products={safeProducts}
         onDelete={handleDeleteProduct}
         onAddPhoto={handleOpenPhotoModal}
       />
@@ -140,7 +148,7 @@ const ManageProductsPage = () => {
   );
 };
 
-const ProductList = ({ products, onDelete, onAddPhoto }: any) => (
+const ProductList: React.FC<ProductListProps> = ({ products, onDelete, onAddPhoto }) => (
   <div className="max-w-4xl mx-auto p-8 bg-gray-200 rounded-lg mb-12 space-y-4">
     <h2 className="text-center text-gray-700 font-semibold mb-6">Product List</h2>
     {products && products.length > 0 ? (
