@@ -112,7 +112,6 @@ const ManageProductsPage = () => {
             onSelect={handleAddPhotoToProduct}
           />
         )}
-      
     </div>
   );
 };
