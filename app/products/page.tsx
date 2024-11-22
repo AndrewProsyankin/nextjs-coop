@@ -4,6 +4,7 @@ import useSWR, { mutate } from 'swr';
 import { useState } from 'react';
 import CustomImage from '../components/CustomImage';
 
+
 interface Product {
   id: number;
   name: string;
@@ -22,14 +23,14 @@ const fetchProducts = async () => {
 export default function ProductsPage() {
   const { data: products, error } = useSWR<Product[]>('/api/products', fetchProducts);
   const [newProduct, setNewProduct] = useState({ name: '', price: 0, photo: '' });
-
   const handleDelete = async (id: number) => {
     if (!confirm('Вы уверены, что хотите удалить продукт?')) return;
-
+  
     try {
       const response = await fetch(`/api/products?id=${id}`, {
         method: 'DELETE',
       });
+  
       if (response.ok) {
         mutate('/api/products');
       } else {
@@ -39,6 +40,7 @@ export default function ProductsPage() {
       console.error('Ошибка удаления:', error);
     }
   };
+  
 
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();

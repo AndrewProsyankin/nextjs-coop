@@ -22,9 +22,9 @@ const ProductList: React.FC<ProductListProps> = ({ products, onDelete, onAddPhot
               <CustomImage
                 image_url={product.image_url}
                 alt={product.name}
-                width={100}
-                height={100}
-                className="rounded-md"
+                width={100} 
+                height={100} 
+                className="rounded-md object-cover w-[100px] h-[100px]" 
               />
               <div>
                 <p className="text-gray-700">{product.name}</p>

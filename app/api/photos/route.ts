@@ -1,12 +1,12 @@
 import { list, put, del } from '@vercel/blob';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export interface BlobItem {
   key: string;
   url: string;
 }
 
-// GET: Получение списка файлов
+// GET: Получение списка загруженных фотографий
 export async function GET() {
   try {
     const response = await list();
@@ -25,30 +25,43 @@ export async function GET() {
   }
 }
 
-// POST: Загрузка нового файла
+// POST: Загрузка новой фотографии
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
     const imageFile = formData.get('image') as File;
 
     if (!imageFile) {
-      return NextResponse.json({ error: 'No file selected' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'No file selected' },
+        { status: 400 }
+      );
     }
 
     const allowedTypes = ['image/jpeg', 'image/png'];
     const maxSize = 5 * 1024 * 1024; // 5 MB
 
     if (!allowedTypes.includes(imageFile.type)) {
-      return NextResponse.json({ error: 'Unsupported file type' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Unsupported file type' },
+        { status: 400 }
+      );
     }
+
     if (imageFile.size > maxSize) {
-      return NextResponse.json({ error: 'File size exceeds limit' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'File size exceeds limit' },
+        { status: 400 }
+      );
     }
 
     const blob = await put(imageFile.name, imageFile, { access: 'public' });
-    return NextResponse.json({ message: 'File uploaded successfully', blob }, { status: 201 });
+    return NextResponse.json(
+      { message: 'File uploaded successfully', blob },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error('Error uploading image:', error);
+    console.error('Error uploading photo:', error);
     return NextResponse.json(
       { error: 'Failed to upload file' },
       { status: 500 }
@@ -56,18 +69,25 @@ export async function POST(req: Request) {
   }
 }
 
-// DELETE: Удаление файла
-export async function DELETE(req: Request) {
+// DELETE: Удаление фотографии
+export async function DELETE(req: NextRequest) {
   try {
     const { key } = await req.json();
+
     if (!key) {
-      return NextResponse.json({ error: 'File key is missing' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'File key is missing' },
+        { status: 400 }
+      );
     }
 
     await del([key]);
-    return NextResponse.json({ message: 'File deleted successfully' }, { status: 200 });
+    return NextResponse.json(
+      { message: 'File deleted successfully' },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error('Error deleting file:', error);
+    console.error('Error deleting photo:', error);
     return NextResponse.json(
       { error: 'Failed to delete file' },
       { status: 500 }
