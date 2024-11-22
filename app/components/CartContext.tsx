@@ -1,3 +1,4 @@
+'use client'
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 // Define the structure of Product and CartItem
@@ -5,7 +6,7 @@ interface Product {
   id: number;
   name: string;
   price: number;
-  imageSrc: string;
+  image_url: string;
   imageAlt: string;
 }
 

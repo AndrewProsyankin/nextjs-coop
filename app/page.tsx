@@ -1,6 +1,7 @@
 'use client';
-import { useRouter } from 'next/navigation';
+
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const HomePage = () => {

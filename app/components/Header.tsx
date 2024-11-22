@@ -1,25 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ShoppingBagIcon, BellIcon, UserIcon } from '@heroicons/react/24/outline';
 import { useCart } from './CartContext';
 import navbarCategories from '@/app/data/navbarCategories.json';
 import Cart from '../about/Cart/page';
-import { motion, AnimatePresence } from 'framer-motion';
-
-const dropdownVariants = {
-  open: {
-    opacity: 1,
-    height: 'auto',
-    transition: { type: 'spring', stiffness: 200, damping: 20 }
-  },
-  closed: {
-    opacity: 0,
-    height: 0,
-    transition: { type: 'spring', stiffness: 300, damping: 30 }
-  }
-};
+import Image from 'next/image';
 
 const Header = () => {
   const { cartItems } = useCart();

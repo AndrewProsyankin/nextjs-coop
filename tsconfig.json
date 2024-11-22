@@ -26,14 +26,16 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "./src/**/*"
+    "./src/**/*",
+    "app/manage-products"
   ],
   "exclude": [
     "node_modules"
