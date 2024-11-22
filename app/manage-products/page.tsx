@@ -37,8 +37,10 @@ const ManageProductsPage = () => {
 
       if (!response.ok) throw new Error('Failed to add product');
 
-      await mutateProducts(); // Синхронизируем продукты
-      setNewProduct({ id: 0, name: '', price: 0, image_url: '' }); // Очистка формы
+      // Обновляем продукты, после успешного добавления
+      await mutateProducts();
+      // Очистка формы после добавления
+      setNewProduct({ id: 0, name: '', price: 0, image_url: '' });
     } catch (error) {
       console.error('Error adding product:', error);
     }
@@ -50,39 +52,45 @@ const ManageProductsPage = () => {
 
       if (!response.ok) throw new Error('Failed to delete product');
 
-      await mutateProducts(); // Синхронизируем продукты
+      // Обновляем продукты, после успешного удаления
+      await mutateProducts();
     } catch (error) {
       console.error('Error deleting product:', error);
     }
   };
 
-  const handleAddPhotoToProduct = async (photoUrl: string) => {
-    if (!selectedProductId) return;
+// Ваша функция для добавления фото к продукту
+const handleAddPhotoToProduct = async (photoUrl: string) => {
+  if (!selectedProductId) return;
 
-    try {
-      const response = await fetch(`/api/products/${selectedProductId}/photos`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url: photoUrl }),
-      });
+  try {
+    await fetch(`/api/products/${selectedProductId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ photo: photoUrl,}), 
+    });
 
-      if (!response.ok) throw new Error('Failed to add photo to product');
+    // Обновляем данные продуктов
+    await mutateProducts();
+    await mutatePhotos();
+    // Закрытие модального окна
+    setIsPhotoModalOpen(false);
+    setSelectedProductId(null);
+  } catch (error) {
+    console.error('Error adding photo to product:', error);
+  }
+};
 
-      await mutateProducts(); 
-      await mutatePhotos(); 
-      setIsPhotoModalOpen(false); 
-    } catch (error) {
-      console.error('Error adding photo to product:', error);
-    }
-  };
 
+  // Открытие модального окна для выбора фото
   const openPhotoModal = (productId: number) => {
     setSelectedProductId(productId);
     setIsPhotoModalOpen(true);
   };
 
+  // Закрытие модального окна
   const closePhotoModal = () => {
     setIsPhotoModalOpen(false);
     setSelectedProductId(null);
@@ -91,27 +99,27 @@ const ManageProductsPage = () => {
   return (
     <div className="bg-gray-100 min-h-screen py-8">
       <h1 className="text-center text-gray-800 text-3xl font-bold mb-8">Manage Products</h1>
-        <ProductForm
-          newProduct={newProduct}
-          setNewProduct={setNewProduct}
+      <ProductForm
+        newProduct={newProduct}
+        setNewProduct={setNewProduct}
+        photos={photos}
+        onSubmit={handleAddProduct}
+        onSelectImage={(photoUrl) =>
+          setNewProduct({ ...newProduct, image_url: photoUrl })
+        }
+      />
+      <ProductList
+        products={products}
+        onDelete={handleDeleteProduct}
+        onAddPhoto={openPhotoModal}
+      />
+      {isPhotoModalOpen && (
+        <PhotoSelectionModal
           photos={photos}
-          onSubmit={handleAddProduct}
-          onSelectImage={(photoUrl) =>
-            setNewProduct({ ...newProduct, image_url: photoUrl })
-          }
+          onClose={closePhotoModal}
+          onSelect={(photoUrl) => handleAddPhotoToProduct(photoUrl)}
         />
-        <ProductList
-          products={products}
-          onDelete={handleDeleteProduct}
-          onAddPhoto={openPhotoModal}
-        />
-        {isPhotoModalOpen && (
-          <PhotoSelectionModal
-            photos={photos}
-            onClose={closePhotoModal}
-            onSelect={handleAddPhotoToProduct}
-          />
-        )}
+      )}
     </div>
   );
 };

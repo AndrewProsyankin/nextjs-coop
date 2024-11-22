@@ -10,6 +10,7 @@ interface Product {
   image_url: string;
   imageAlt: string;
   imageSrc: string;
+  isAvailable: boolean; 
 }
 
 interface ProductsListProps {
