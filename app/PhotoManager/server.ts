@@ -1,4 +1,3 @@
-// app/PhotoManager/server.ts
 'use server';
 
 import { list } from '@vercel/blob';
@@ -9,9 +8,15 @@ interface BlobItem {
 }
 
 export async function getPhotos(): Promise<BlobItem[]> {
-  const response = await list();
-  return response.blobs.map((item: { pathname: string; downloadUrl: string }) => ({
-    key: item.pathname,
-    url: item.downloadUrl,
-  }));
+  try {
+    const response = await list();
+    console.log('Blobs from list:', response.blobs); // Для отладки
+    return response.blobs.map((item: { pathname: string; downloadUrl: string }) => ({
+      key: item.pathname,
+      url: item.downloadUrl,
+    }));
+  } catch (error) {
+    console.error('Error fetching blobs:', error);
+    return [];
+  }
 }

@@ -8,28 +8,18 @@ export interface Product {
   image_url: string | null;
 }
 
+// PATCH: Update product photo by ID
 export async function PATCH(req: NextRequest) {
   try {
-    const url = req.url;
-    const idMatch = url.match(/\/api\/products\/(\d+)/); 
+    const { id, photo } = await req.json(); 
 
-    if (!idMatch || idMatch[1] === undefined) {
+    if (!id || !photo) {
       return NextResponse.json(
-        { error: 'Product ID not provided in URL' },
+        { error: 'Product ID or photo URL not provided' },
         { status: 400 }
       );
     }
 
-    const id = idMatch[1];
-    const { photo } = await req.json(); 
-
-    if (!photo) {
-      return NextResponse.json(
-        { error: 'Photo URL not provided' },
-        { status: 400 }
-      );
-    }
-    
     await sql`UPDATE products SET image_url = ${photo} WHERE id = ${id};`;
 
     return NextResponse.json(
@@ -44,3 +34,5 @@ export async function PATCH(req: NextRequest) {
     );
   }
 }
+
+

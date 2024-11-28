@@ -1,29 +1,28 @@
-'use client'
+'use client';
 import { createContext, ReactNode, useContext, useState } from 'react';
 
-// Define the structure of Product and CartItem
 interface Product {
   id: number;
   name: string;
   price: number;
   image_url: string;
   imageAlt: string;
+  isAvailable: boolean;  // Product availability
 }
 
 interface CartItem extends Product {
   quantity: number;
   color: string;
-  price: number;
 }
 
-// Define the context state
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
-  updateCartItem: (id: number, quantity: number) => void; // Define updateCartItem here
+  updateCartItem: (id: number, quantity: number) => void;
   clearCart: () => void;
+  syncCartWithAPI: () => Promise<void>;
 }
 
 // Create the CartContext with a default value
@@ -38,21 +37,50 @@ export const useCart = () => {
   return context;
 };
 
+// Helper function to get the initial cart items from localStorage
 const getInitialCart = (): CartItem[] => {
-  if (typeof window !== 'undefined' && window.localStorage){
+  if (typeof window !== 'undefined' && window.localStorage) {
     const storedCart = localStorage.getItem('cartItems');
     return storedCart ? JSON.parse(storedCart) : [];
   }
   return [];
 };
 
-// CartProvider to wrap around components where the cart state is needed
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  // Load cart items from local storage, or initialize as an empty array
   const [cartItems, setCartItems] = useState<CartItem[]>(getInitialCart);
 
+  const syncCartWithAPI = async () => {
+    try {
+      const response = await fetch('/api/cart');
+      if (!response.ok) throw new Error('Failed to fetch cart items');
+      const cartFromAPI: CartItem[] = await response.json();
+      setCartItems(cartFromAPI);
 
-  const addToCart = (product: Product) => {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem('cartItems', JSON.stringify(cartFromAPI));
+      }
+    } catch (error) {
+      console.error('Error syncing cart with API:', error);
+    }
+  };
+
+  const checkProductAvailability = async (id: number): Promise<boolean> => {
+    try {
+      const response = await fetch(`/api/products?id=${id}`);
+      return response.ok;
+    } catch (error) {
+      console.error('Error checking product availability:', error);
+      return false;
+    }
+  };
+
+  const addToCart = async (product: Product) => {
+    const isAvailable = await checkProductAvailability(product.id);
+    if (!isAvailable) {
+      alert('Product is no longer available');
+      return;
+    }
+
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
       let updatedCart;
@@ -65,39 +93,43 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         updatedCart = [...prevItems, { ...product, quantity: 1, color: '' }];
       }
 
-      if (typeof window !== 'undefined' && window.localStorage){
-      console.log('added to cart', JSON.stringify(updatedCart))
-       localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem('cartItems', JSON.stringify(updatedCart));
       }
       return updatedCart;
     });
   };
 
+  const removeFromCart = async (id: number) => {
+    const isAvailable = await checkProductAvailability(id);
+    if (!isAvailable) {
+      alert('Product is no longer available and has been removed from your cart');
+    }
 
-  const removeFromCart = (id: number) => {
-    setCartItems((prevItems) =>{
-      const updatedCart = prevItems
-        .map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-        )
-        .filter((item) => item.quantity > 0);
+    setCartItems((prevItems) => {
+      const updatedCart = prevItems.filter((item) => item.id !== id);
 
-        if (typeof window !== 'undefined' && window.localStorage){
-        console.log('removed from cart', JSON.stringify(updatedCart))
-         localStorage.setItem('cartItems', JSON.stringify(updatedCart));
-        }
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+      }
       return updatedCart;
     });
   };
 
+  const updateCartItem = async (id: number, quantity: number) => {
+    const isAvailable = await checkProductAvailability(id);
+    if (!isAvailable) {
+      alert('Product is no longer available and has been removed from your cart');
+      removeFromCart(id); 
+      return;
+    }
 
-  const updateCartItem = (id: number, quantity: number) => {
     setCartItems((prevItems) => {
       const updatedCart = prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: quantity > 0 ? quantity : 1 } : item
+        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
       );
-      console.log('updated cart', JSON.stringify(cartItems))
-      if (typeof window !== 'undefined' && window.localStorage){
+
+      if (typeof window !== 'undefined' && window.localStorage) {
         localStorage.setItem('cartItems', JSON.stringify(updatedCart));
       }
       return updatedCart;
@@ -106,16 +138,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = () => {
     setCartItems([]);
-    console.log('removed  all from cart', JSON.stringify(cartItems))
-
-    if (typeof window !== 'undefined' && window.localStorage){
-     localStorage.removeItem('cartItems');
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.removeItem('cartItems');
     }
+    syncCartWithAPI();
   };
 
-
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, setCartItems, updateCartItem, removeFromCart, clearCart }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addToCart,
+        setCartItems,
+        updateCartItem,
+        removeFromCart,
+        clearCart,
+        syncCartWithAPI,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
