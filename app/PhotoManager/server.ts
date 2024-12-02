@@ -1,6 +1,6 @@
 'use server';
 
-import { list } from '@vercel/blob';
+import { list, del } from '@vercel/blob';
 
 interface BlobItem {
   key: string;
@@ -10,7 +10,7 @@ interface BlobItem {
 export async function getPhotos(): Promise<BlobItem[]> {
   try {
     const response = await list();
-    console.log('Blobs from list:', response.blobs); // Для отладки
+    console.log('Blobs from list:', response.blobs);
     return response.blobs.map((item: { pathname: string; downloadUrl: string }) => ({
       key: item.pathname,
       url: item.downloadUrl,
@@ -20,3 +20,16 @@ export async function getPhotos(): Promise<BlobItem[]> {
     return [];
   }
 }
+
+export async function deletePhoto(key: string): Promise<boolean> {
+  try {
+    console.log(`Attempting to delete key: ${key}`);
+    await del(key);
+    console.log(`Successfully deleted key: ${key}`);
+    return true;
+  } catch (error) {
+    console.error(`Failed to delete key: ${key}`, error);
+    return false;
+  }
+}
+

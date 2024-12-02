@@ -6,13 +6,13 @@ export interface BlobItem {
   url: string;
 }
 
-// GET: Получение списка загруженных фотографий
+// GET
 export async function GET() {
   try {
     const response = await list();
     const items: BlobItem[] = response.blobs.map((item) => ({
       key: item.pathname,
-      url: item.downloadUrl,
+      url: item.url,
     }));
 
     return NextResponse.json(items, { status: 200 });
@@ -25,7 +25,7 @@ export async function GET() {
   }
 }
 
-// POST: Загрузка новой фотографии
+// POST
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
@@ -69,30 +69,32 @@ export async function POST(req: Request) {
   }
 }
 
-// DELETE: Удаление фотографии
-// DELETE: Удаление фотографии
+// DELETE
 export async function DELETE(req: NextRequest) {
   try {
     const { key } = await req.json();
 
     if (!key) {
+      console.error('Missing file key');
       return NextResponse.json(
         { error: 'File key is missing' },
         { status: 400 }
       );
     }
 
-    // Удаляем файл
+    console.log(`Attempting to delete file with key: ${key}`);
     await del([key]);
 
-    // Убедитесь, что файл действительно удалён
+    console.log(`File deleted successfully: ${key}`);
+
+    // Return updated list of photos after deletion
     const response = await list();
     const items: BlobItem[] = response.blobs.map((item) => ({
       key: item.pathname,
       url: item.downloadUrl,
     }));
 
-    return NextResponse.json(items, { status: 200 }); // Возвращаем обновлённый список
+    return NextResponse.json(items, { status: 200 });
   } catch (error) {
     console.error('Error deleting photo:', error);
     return NextResponse.json(
@@ -101,6 +103,3 @@ export async function DELETE(req: NextRequest) {
     );
   }
 }
-
-
-

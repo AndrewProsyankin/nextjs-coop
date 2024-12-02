@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
-
 interface Photo {
   key: string;
   url: string;
@@ -41,7 +40,7 @@ export default function PhotoManagerPage() {
       });
 
       if (response.ok) {
-        mutate('/api/photos'); 
+        mutate('/api/photos'); // Re-fetch the photos after upload
       } else {
         const { error } = await response.json();
         alert(error);
@@ -54,34 +53,29 @@ export default function PhotoManagerPage() {
   };
 
   const handleDelete = async (key: string) => {
-    if (!confirm('Are you sure you want to delete this photo?')) return;
-  
-    setDeleting(key);
-  
+    setDeleting(key); // Set deleting state for the key to show loading state in UI
     try {
       const response = await fetch('/api/photos', {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ key }),
       });
-  
-      if (!response.ok) {
+
+      if (response.ok) {
+        const updatedPhotos = await response.json(); // Get updated list of photos
+        mutate('/api/photos', updatedPhotos, false); // Update the photos list in SWR cache
+      } else {
         const { error } = await response.json();
-        throw new Error(error || 'Failed to delete photo');
+        alert(error);
       }
-  
-      // Убедитесь, что данные обновлены
-      await mutate('/api/photos'); // Обновление через SWR
     } catch (err) {
-      console.error('Error during deletion:', err);
-      alert('Failed to delete the photo');
+      console.error('Delete failed:', err);
     } finally {
-      setDeleting(null);
+      setDeleting(null); // Reset deleting state
     }
   };
-  
-  
-  
   
   if (error) return <div>Error loading photos</div>;
   if (!photos) return <div>Loading...</div>;
@@ -120,8 +114,10 @@ export default function PhotoManagerPage() {
               <div key={photo.key} className="flex flex-col items-center bg-white rounded-md shadow-md p-4">
                 <img src={photo.url} alt={photo.key} className="w-full h-48 object-cover rounded-md mb-4" />
                 <button
-                  onClick={() => handleDelete(photo.key)}
-                  className="w-full py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-all"
+                  onClick={() => handleDelete(photo.url)}
+                  className={`w-full py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-all ${
+                    deleting === photo.key ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                   disabled={deleting === photo.key}
                 >
                   {deleting === photo.key ? 'Deleting...' : 'Delete'}
