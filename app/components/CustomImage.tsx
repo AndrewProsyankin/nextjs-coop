@@ -25,6 +25,7 @@ const CustomImage: React.FC<CustomImageProps> = ({ image_url, alt, width, height
           height={height}
           className={`object-cover ${className}`}
           loading="lazy"
+          
         />
       ) : (
         <div

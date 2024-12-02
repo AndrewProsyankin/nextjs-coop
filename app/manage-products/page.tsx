@@ -18,6 +18,10 @@ const ManageProductsPage = () => {
     name: '',
     price: 0,
     image_url: '',
+    imageAlt: '',
+    imageSrc: '',
+    isAvailable: false,
+    stock_quantity: 0
   });
 
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
@@ -37,8 +41,17 @@ const ManageProductsPage = () => {
 
       if (!response.ok) throw new Error('Failed to add product');
 
-      await mutateProducts(); // Синхронизируем продукты
-      setNewProduct({ id: 0, name: '', price: 0, image_url: '' }); // Очистка формы
+      await mutateProducts();
+      setNewProduct({
+        id: 0,
+        name: '',
+        price: 0,
+        image_url: '',
+        imageAlt: '',
+        imageSrc: '',
+        isAvailable: false,
+        stock_quantity: 0
+      });
     } catch (error) {
       console.error('Error adding product:', error);
     }
@@ -50,29 +63,36 @@ const ManageProductsPage = () => {
 
       if (!response.ok) throw new Error('Failed to delete product');
 
-      await mutateProducts(); // Синхронизируем продукты
+      await mutateProducts();
     } catch (error) {
       console.error('Error deleting product:', error);
     }
   };
+  const handleDeletePhoto = async (photoKey: string) => {
+    try {
+      const response = await fetch(`/api/photos/${photoKey}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error('Failed to delete photo');
+      await mutatePhotos();
+    } catch (error) {
+      console.error('Error deleting photo:', error);
+    }
+  };
+  
 
   const handleAddPhotoToProduct = async (photoUrl: string) => {
     if (!selectedProductId) return;
 
     try {
-      const response = await fetch(`/api/products/${selectedProductId}/photos`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url: photoUrl }),
+      await fetch(`/api/products/${selectedProductId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ photo: photoUrl }),
       });
 
-      if (!response.ok) throw new Error('Failed to add photo to product');
-
-      await mutateProducts(); 
-      await mutatePhotos(); 
-      setIsPhotoModalOpen(false); 
+      await mutateProducts();
+      await mutatePhotos();
+      setIsPhotoModalOpen(false);
+      setSelectedProductId(null);
     } catch (error) {
       console.error('Error adding photo to product:', error);
     }
@@ -91,27 +111,28 @@ const ManageProductsPage = () => {
   return (
     <div className="bg-gray-100 min-h-screen py-8">
       <h1 className="text-center text-gray-800 text-3xl font-bold mb-8">Manage Products</h1>
-        <ProductForm
-          newProduct={newProduct}
-          setNewProduct={setNewProduct}
+      <ProductForm
+        newProduct={newProduct}
+        setNewProduct={setNewProduct}
+        photos={photos}
+        onSubmit={handleAddProduct}
+        onSelectImage={(photoUrl) =>
+          setNewProduct({ ...newProduct, image_url: photoUrl })
+        }
+      />
+      <ProductList
+        products={products}
+        onDelete={handleDeleteProduct}
+        onAddPhoto={openPhotoModal}
+      />
+      {isPhotoModalOpen && (
+        <PhotoSelectionModal
           photos={photos}
-          onSubmit={handleAddProduct}
-          onSelectImage={(photoUrl) =>
-            setNewProduct({ ...newProduct, image_url: photoUrl })
-          }
+          onClose={closePhotoModal}
+          onSelect={(photoUrl) => handleAddPhotoToProduct(photoUrl)}
+          onDeletePhoto={handleDeletePhoto}
         />
-        <ProductList
-          products={products}
-          onDelete={handleDeleteProduct}
-          onAddPhoto={openPhotoModal}
-        />
-        {isPhotoModalOpen && (
-          <PhotoSelectionModal
-            photos={photos}
-            onClose={closePhotoModal}
-            onSelect={handleAddPhotoToProduct}
-          />
-        )}
+      )}
     </div>
   );
 };
