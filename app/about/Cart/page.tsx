@@ -8,7 +8,7 @@ import CustomImage from '@/app/components/CustomImage';
 
 export default function Cart() {
   const [open, setOpen] = useState(true);
-  const { cartItems, removeFromCart, updateCartItem, clearCart } = useCart();
+  const { cartItems, removeFromCartOnDelete, updateCartItem, clearCart } = useCart();
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
 
@@ -85,7 +85,7 @@ export default function Cart() {
                                 <div className="flex items-end justify-between text-sm">
                                   <button
                                     type="button"
-                                    onClick={() => removeFromCart(product.id)} 
+                                    onClick={() => removeFromCartOnDelete(product.id)}
                                     className="font-medium text-[#6E4C1EFF] hover:text-[#98730C]"
                                   >
                                     Remove

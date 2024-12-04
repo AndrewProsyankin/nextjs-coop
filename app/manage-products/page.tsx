@@ -60,14 +60,15 @@ const ManageProductsPage = () => {
   const handleDeleteProduct = async (id: number) => {
     try {
       const response = await fetch(`/api/products/${id}`, { method: 'DELETE' });
-
+  
       if (!response.ok) throw new Error('Failed to delete product');
-
+  
       await mutateProducts();
     } catch (error) {
       console.error('Error deleting product:', error);
     }
   };
+  
   const handleDeletePhoto = async (photoKey: string) => {
     try {
       const response = await fetch(`/api/photos/${photoKey}`, { method: 'DELETE' });
