@@ -64,7 +64,7 @@ export default function PhotoManagerPage() {
       });
 
       if (response.ok) {
-        const updatedPhotos = await response.json(); // Get updated list of photos
+        const updatedPhotos = await response.json() as Photo[]; // Get updated list of photos
         mutate('/api/photos', updatedPhotos, false); // Update the photos list in SWR cache
       } else {
         const { error } = await response.json();
@@ -110,11 +110,11 @@ export default function PhotoManagerPage() {
         <h2 className="text-center text-gray-700 font-semibold mb-6">Uploaded Photos</h2>
         {photos.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {photos.map((photo: Photo) => (
+            {photos.map((photo) => (
               <div key={photo.key} className="flex flex-col items-center bg-white rounded-md shadow-md p-4">
                 <img src={photo.url} alt={photo.key} className="w-full h-48 object-cover rounded-md mb-4" />
                 <button
-                  onClick={() => handleDelete(photo.url)}
+                  onClick={() => handleDelete(photo.key)}
                   className={`w-full py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-all ${
                     deleting === photo.key ? 'opacity-50 cursor-not-allowed' : ''
                   }`}

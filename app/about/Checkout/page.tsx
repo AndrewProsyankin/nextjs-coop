@@ -6,7 +6,7 @@ import CustomImage from '@/app/components/CustomImage';
 import { useEffect, useState } from 'react';
 
 const Checkout: React.FC = () => {
-  const { cartItems = [], removeFromCart, updateCartItem } = useCart(); // Default to empty array
+  const { cartItems = [], removeFromCartOnDelete, updateCartItem } = useCart(); // Default to empty array
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
 
@@ -62,7 +62,7 @@ const Checkout: React.FC = () => {
                               style={{ color: 'gray' }}
                             />
                             <button
-                              onClick={() => removeFromCart(item.id)}
+                              onClick={() => removeFromCartOnDelete(item.id)}
                               className="text-red-600 hover:text-red-800"
                             >
                               Remove

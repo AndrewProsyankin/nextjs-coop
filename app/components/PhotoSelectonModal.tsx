@@ -6,7 +6,7 @@ interface PhotoSelectionModalProps {
   photos: Photo[];
   onClose: () => void;
   onSelect: (photoUrl: string) => void;
-  onDeletePhoto: (key: string) => void; 
+  onDeletePhoto: (key: string) => void; // Пропс для удаления фото
 }
 
 const PhotoSelectionModal: React.FC<PhotoSelectionModalProps> = ({ photos, onClose, onSelect, onDeletePhoto }) => {
@@ -22,13 +22,14 @@ const PhotoSelectionModal: React.FC<PhotoSelectionModalProps> = ({ photos, onClo
         return;
       }
 
-      onSelect(photoUrl); 
+      onSelect(photoUrl); // Вызываем onSelect, если изображение подходит
     };
   };
 
+  // Убедимся, что onDeletePhoto - это функция
   if (typeof onDeletePhoto !== 'function') {
     console.error("onDeletePhoto is not a function");
-    return null; 
+    return null; // или возвращаем какой-то fallback UI
   }
 
   return (
@@ -53,7 +54,7 @@ const PhotoSelectionModal: React.FC<PhotoSelectionModalProps> = ({ photos, onClo
                 <button
                   onClick={(e) => {
                     e.stopPropagation(); // Останавливаем всплытие события
-                    onDeletePhoto(photo.key); 
+                    onDeletePhoto(photo.key); // Вызываем удаление фото
                   }}
                   className="absolute top-0 right-0 bg-red-600 text-white text-sm rounded-full p-1"
                 >

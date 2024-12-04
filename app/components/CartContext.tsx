@@ -6,26 +6,27 @@ interface Product {
   name: string;
   price: number;
   image_url: string;
-  imageAlt: string;
-  isAvailable: boolean;  // Product availability
+  isAvailable: boolean;
+  imageAlt: string; 
+  imageSrc: string; 
 }
 
 interface CartItem extends Product {
   quantity: number;
   color: string;
+  id: number;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: Product) => void;
-  removeFromCart: (id: number) => void;
+  removeFromCartOnDelete: (id: number) => void;
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
   updateCartItem: (id: number, quantity: number) => void;
   clearCart: () => void;
-  syncCartWithAPI: () => Promise<void>;
 }
 
-// Create the CartContext with a default value
+// Create the CartContext
 export const CartContext = createContext<CartContextType | undefined>(undefined);
 
 // Custom hook to use the CartContext
@@ -37,7 +38,7 @@ export const useCart = () => {
   return context;
 };
 
-// Helper function to get the initial cart items from localStorage
+// Helper to get initial cart state from localStorage
 const getInitialCart = (): CartItem[] => {
   if (typeof window !== 'undefined' && window.localStorage) {
     const storedCart = localStorage.getItem('cartItems');
@@ -49,38 +50,7 @@ const getInitialCart = (): CartItem[] => {
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>(getInitialCart);
 
-  const syncCartWithAPI = async () => {
-    try {
-      const response = await fetch('/api/cart');
-      if (!response.ok) throw new Error('Failed to fetch cart items');
-      const cartFromAPI: CartItem[] = await response.json();
-      setCartItems(cartFromAPI);
-
-      if (typeof window !== 'undefined' && window.localStorage) {
-        localStorage.setItem('cartItems', JSON.stringify(cartFromAPI));
-      }
-    } catch (error) {
-      console.error('Error syncing cart with API:', error);
-    }
-  };
-
-  const checkProductAvailability = async (id: number): Promise<boolean> => {
-    try {
-      const response = await fetch(`/api/products?id=${id}`);
-      return response.ok;
-    } catch (error) {
-      console.error('Error checking product availability:', error);
-      return false;
-    }
-  };
-
-  const addToCart = async (product: Product) => {
-    const isAvailable = await checkProductAvailability(product.id);
-    if (!isAvailable) {
-      alert('Product is no longer available');
-      return;
-    }
-
+  const addToCart = (product: Product) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
       let updatedCart;
@@ -100,30 +70,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const removeFromCart = async (id: number) => {
-    const isAvailable = await checkProductAvailability(id);
-    if (!isAvailable) {
-      alert('Product is no longer available and has been removed from your cart');
-    }
-
+  const removeFromCartOnDelete =  (id: number) => {
     setCartItems((prevItems) => {
       const updatedCart = prevItems.filter((item) => item.id !== id);
-
       if (typeof window !== 'undefined' && window.localStorage) {
         localStorage.setItem('cartItems', JSON.stringify(updatedCart));
       }
       return updatedCart;
     });
+  
   };
+  
 
-  const updateCartItem = async (id: number, quantity: number) => {
-    const isAvailable = await checkProductAvailability(id);
-    if (!isAvailable) {
-      alert('Product is no longer available and has been removed from your cart');
-      removeFromCart(id); 
-      return;
-    }
-
+  const updateCartItem = async(id: number, quantity: number) => {
     setCartItems((prevItems) => {
       const updatedCart = prevItems.map((item) =>
         item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
@@ -141,7 +100,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.removeItem('cartItems');
     }
-    syncCartWithAPI();
   };
 
   return (
@@ -151,9 +109,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         addToCart,
         setCartItems,
         updateCartItem,
-        removeFromCart,
+        removeFromCartOnDelete,
         clearCart,
-        syncCartWithAPI,
       }}
     >
       {children}
