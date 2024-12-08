@@ -13,4 +13,8 @@ export interface Product {
     key: string;
     url: string;
   }
+
+  export interface ProductsListProps {
+    products: Product[];
+  }
   
