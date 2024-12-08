@@ -7,9 +7,6 @@ interface BlobItem {
   url: string;
 }
 
-/**
- * Получает список фотографий из хранилища.
- */
 export async function getPhotos(): Promise<BlobItem[]> {
   try {
     const response = await list();
@@ -24,10 +21,6 @@ export async function getPhotos(): Promise<BlobItem[]> {
   }
 }
 
-/**
- * Удаляет фотографию из хранилища по ключу.
- * @param key - Ключ удаляемого файла.
- */
 export async function deletePhoto(key: string): Promise<boolean> {
   try {
     console.log(`Attempting to delete key: ${key}`);

@@ -30,18 +30,27 @@ const ManageProductsPage = () => {
   // Handlers
   const handleAddProduct = async (e: FormEvent) => {
     e.preventDefault();
+    
+    // Validate product data
+    if (!newProduct.name || newProduct.price <= 0) {
+      alert('Product name and price are required!');
+      return;
+    }
+  
     try {
       const response = await fetch('/api/products', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newProduct),
       });
-
-      if (!response.ok) throw new Error('Failed to add product');
-
+  
+      if (!response.ok) {
+        const errorDetails = await response.json();
+        throw new Error(errorDetails.message || 'Failed to add product');
+      }
+  
       await mutateProducts();
+      await mutatePhotos();
       setNewProduct({
         id: 0,
         name: '',
@@ -50,16 +59,20 @@ const ManageProductsPage = () => {
         imageAlt: '',
         imageSrc: '',
         isAvailable: false,
-        stock_quantity: 0
+        stock_quantity: 0,
       });
     } catch (error) {
       console.error('Error adding product:', error);
+      alert('Failed to add product. Please try again.');
     }
   };
+  
 
   const handleDeleteProduct = async (id: number) => {
     try {
-      const response = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+      const response = await fetch(`/api/products?id=${id}`, { 
+        method: 'DELETE',
+      });
   
       if (!response.ok) throw new Error('Failed to delete product');
   
@@ -69,10 +82,17 @@ const ManageProductsPage = () => {
     }
   };
   
-  const handleDeletePhoto = async (photoKey: string) => {
+  
+  const handleDeletePhoto = async (photoUrl: string) => {
     try {
-      const response = await fetch(`/api/photos/${photoKey}`, { method: 'DELETE' });
+      const response = await fetch(`/api/photos`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ photoUrl }), 
+      });
+  
       if (!response.ok) throw new Error('Failed to delete photo');
+  
       await mutatePhotos();
     } catch (error) {
       console.error('Error deleting photo:', error);
@@ -80,16 +100,22 @@ const ManageProductsPage = () => {
   };
   
 
-  const handleAddPhotoToProduct = async (photoUrl: string) => {
-    if (!selectedProductId) return;
 
+  const handleAddPhotoToProduct = async (photoUrl: string) => {
+    if (!selectedProductId) {
+      console.error('No product selected');
+      return;
+    }
+  
     try {
-      await fetch(`/api/products/${selectedProductId}`, {
+      const response = await fetch(`/api/products`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ photo: photoUrl }),
+        body: JSON.stringify({ id: selectedProductId, photo: photoUrl }), 
       });
-
+  
+      if (!response.ok) throw new Error('Failed to update product photo');
+  
       await mutateProducts();
       await mutatePhotos();
       setIsPhotoModalOpen(false);
@@ -98,7 +124,7 @@ const ManageProductsPage = () => {
       console.error('Error adding photo to product:', error);
     }
   };
-
+  
   const openPhotoModal = (productId: number) => {
     setSelectedProductId(productId);
     setIsPhotoModalOpen(true);

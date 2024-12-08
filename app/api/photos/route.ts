@@ -1,12 +1,11 @@
 import { list, put, del } from '@vercel/blob';
 import { NextRequest, NextResponse } from 'next/server';
-
 export interface BlobItem {
   key: string;
   url: string;
 }
 
-// GET
+// GET: 
 export async function GET() {
   try {
     const response = await list();
@@ -25,36 +24,31 @@ export async function GET() {
   }
 }
 
-// POST
+// POST: 
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
     const imageFile = formData.get('image') as File;
-
     if (!imageFile) {
       return NextResponse.json(
         { error: 'No file selected' },
         { status: 400 }
       );
     }
-
     const allowedTypes = ['image/jpeg', 'image/png'];
     const maxSize = 5 * 1024 * 1024; // 5 MB
-
     if (!allowedTypes.includes(imageFile.type)) {
       return NextResponse.json(
         { error: 'Unsupported file type' },
         { status: 400 }
       );
     }
-
     if (imageFile.size > maxSize) {
       return NextResponse.json(
         { error: 'File size exceeds limit' },
         { status: 400 }
       );
     }
-
     const blob = await put(imageFile.name, imageFile, { access: 'public' });
     return NextResponse.json(
       { message: 'File uploaded successfully', blob },
@@ -87,11 +81,10 @@ export async function DELETE(req: NextRequest) {
 
     console.log(`File deleted successfully: ${key}`);
 
-    // Return updated list of photos after deletion
     const response = await list();
     const items: BlobItem[] = response.blobs.map((item) => ({
       key: item.pathname,
-      url: item.downloadUrl,
+      url: item.url,
     }));
 
     return NextResponse.json(items, { status: 200 });
