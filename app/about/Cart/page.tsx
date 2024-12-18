@@ -34,8 +34,8 @@ export default function Cart() {
                   exit={{ opacity: 0, y: -100, scale: 0.7 }}
                   transition={{
                     type: 'spring',
-                    stiffness: 150, 
-                    damping: 20, 
+                    stiffness: 250, 
+                    damping: 25, 
                     duration: 0.2, 
                     ease: ['easeInOut', 'easeOut']
                   }}
