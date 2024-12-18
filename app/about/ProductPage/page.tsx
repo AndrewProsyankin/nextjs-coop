@@ -24,7 +24,6 @@ export default function ProductsPage() {
   if (isLoading || !products) {
     return (
       <div className="bg-gray-100 min-h-screen py-8">
-        <h1 className="text-center text-gray-800 text-2xl font-bold-italic mb-8">Loading...</h1>
         <LoadingSpinner isLoading={true} color="bg-blue-500" text="Loading products..." />
       </div>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
 import cx from "classnames";
-import styles from "@/app/LoafingSpinner.module.css"; 
+import styles from "@/app/LoadingSpinner.module.css"; 
 
 export type LoadingSpinnerProps = {
   isLoading: boolean;
