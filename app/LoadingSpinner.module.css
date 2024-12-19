@@ -1,43 +1,53 @@
 .wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.clock {
+  width: 100px;
+  height: 100px;
+}
+
+.dial circle {
+  transition: fill 0.5s ease-in-out;
+}
+
+.hourHand,
+.minuteHand {
+  transform-origin: 50% 50%;
+  animation-timing-function: linear;
+}
+
+@keyframes hourAnimation {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .div1, .div2, .div3 {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin: 5px;
-    animation: spinner 1.2s infinite ease-in-out;
+  100% {
+    transform: rotate(360deg);
   }
-  
-  .div1 {
-    background-color: #808000;
-    animation-delay: 0s;
+}
+
+@keyframes minuteAnimation {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .div2 {
-    background-color: #6E4C1EFF ;
-    animation-delay: 0.3s;
+  100% {
+    transform: rotate(4320deg); /* Быстрее для минутной стрелки */
   }
-  
-  .div3 {
-    background-color: #A0522D;
-    animation-delay: 0.6s;
-  }
-  
-  @keyframes spinner {
-    0% {
-      transform: scale(0.5);
-    }
-    50% {
-      transform: scale(1);
-    }
-    100% {
-      transform: scale(0.5);
-    }
-  }
-  
+}
+
+.hourHand {
+  animation: hourAnimation 5s linear forwards;
+}
+
+.minuteHand {
+  animation: minuteAnimation 5s linear forwards;
+}
+
+.loaded {
+  animation: none;
+  transform: rotate(0deg); /* Устанавливаем на 12:00 */
+}

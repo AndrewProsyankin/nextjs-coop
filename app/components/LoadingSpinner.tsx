@@ -1,28 +1,66 @@
+'use client'
 import React from 'react';
 import cx from "classnames";
-import styles from "@/app/LoadingSpinner.module.css"; 
+import styles from "@/app/LoafingSpinner.module.css"; 
 
 export type LoadingSpinnerProps = {
-  isLoading: boolean;
-  color?: string;
-  text?: string;
-};
-
+    isLoading: boolean;
+    isLoaded?: boolean; 
+    color?: string;
+    text?: string;
+  };
+  
 const LoadingSpinner = ({
-  isLoading,
-  color = "bg-blue-500", 
-  text = "",
+    isLoading,
+    isLoaded = false, 
+    color = "black",
+    text = "",
 }: LoadingSpinnerProps) => {
-  if (!isLoading) return null;
+    const [isMounted, setIsMounted] = React.useState(false);
 
-  return (
-    <div className={styles.wrapper}>
-      <div className={cx(styles.div1, color)}></div>
-      <div className={cx(styles.div2, color)}></div>
-      <div className={cx(styles.div3, color)}></div>
-      {text && <span className="mt-4">{text}</span>} {}
-    </div>
-  );
+    React.useLayoutEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!isLoading && !isLoaded) return null;
+    if (!isMounted) return null;
+
+    return (
+        <div className={styles.wrapper}>
+            <svg className={styles.clock} viewBox="0 0 100 100">
+                {/* Сам циферблат */}
+                <g className={styles.dial}>
+                    {Array.from({ length: 12 }).map((_, i) => {
+                        const angle = (i * Math.PI) / 6;
+                        const x = 50 + 40 * Math.sin(angle);
+                        const y = 50 - 40 * Math.cos(angle);
+                        return <circle key={i} cx={x} cy={y} r="1.5" fill="black" />;
+                    })}
+                </g>
+                {/* Часовая */}
+                <line
+                    x1="50"
+                    y1="50"
+                    x2="50"
+                    y2="30"
+                    className={cx(styles.hourHand, { [styles.loaded]: isLoaded })}
+                    strokeWidth="2"
+                    stroke={color}
+                />
+                {/* Минутная */}
+                <line
+                    x1="50"
+                    y1="50"
+                    x2="50"
+                    y2="20"
+                    className={cx(styles.minuteHand, { [styles.loaded]: isLoaded })}
+                    strokeWidth="1"
+                    stroke={color}
+                />
+            </svg>
+            {text && <span className="mt-4">{text}</span>}
+        </div>
+    );
 };
 
 export default LoadingSpinner;
