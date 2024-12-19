@@ -18,13 +18,15 @@ const Footer = () => {
       <Link href="/about" className="ml-4">
         About Us
       </Link>
-      <Image
-        alt=""
-        src="/images/neurobilan.jpg"
-        className="h-20 w-20 mx-auto rounded-lg"
-        width={80}
-        height={80}
-      />
+      <a href="/" className="flex items-center">
+        <Image
+          alt="/"
+          src="/images/neurobilan.jpg"
+          className="h-20 w-20 mx-auto rounded-lg"
+          width={80}
+          height={80}
+        />
+      </a>
       <p className="text-center">
         <span>© NEUROBILAN 2024</span>
         <br />
