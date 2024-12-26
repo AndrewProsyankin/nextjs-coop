@@ -21,9 +21,19 @@ const Header = () => {
     return null;
   }
 
-  const toggleCart = () => {
-    setIsCartOpen((prevState) => !prevState);
+  const toggleCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (isCartOpen) {
+      setIsCartOpen(false); 
+      setTimeout(() => {
+        setIsCartOpen(true); 
+      }, 0);
+    } else {
+      setIsCartOpen(true); 
+    }
   };
+
 
   return (
     <div className="bg-white">

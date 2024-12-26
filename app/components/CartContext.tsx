@@ -26,7 +26,6 @@ interface CartContextType {
   clearCart: () => void;
 }
 
-// Create the CartContext
 export const CartContext = createContext<CartContextType | undefined>(undefined);
 
 // Custom hook to use the CartContext
@@ -38,7 +37,6 @@ export const useCart = () => {
   return context;
 };
 
-// Helper to get initial cart state from localStorage
 const getInitialCart = (): CartItem[] => {
   if (typeof window !== 'undefined' && window.localStorage) {
     const storedCart = localStorage.getItem('cartItems');
@@ -80,7 +78,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   
   };
-  
 
   const updateCartItem = async(id: number, quantity: number) => {
     setCartItems((prevItems) => {

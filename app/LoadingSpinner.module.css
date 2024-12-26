@@ -1,0 +1,53 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.clock {
+  width: 100px;
+  height: 100px;
+}
+
+.dial circle {
+  transition: fill 0.5s ease-in-out;
+}
+
+.hourHand,
+.minuteHand {
+  transform-origin: 50% 50%;
+  animation-timing-function: linear;
+}
+
+@keyframes hourAnimation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes minuteAnimation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(4320deg); /* Быстрее для минутной стрелки */
+  }
+}
+
+.hourHand {
+  animation: hourAnimation 5s linear forwards;
+}
+
+.minuteHand {
+  animation: minuteAnimation 5s linear forwards;
+}
+
+.loaded {
+  animation: none;
+  transform: rotate(0deg); /* Устанавливаем на 12:00 */
+}

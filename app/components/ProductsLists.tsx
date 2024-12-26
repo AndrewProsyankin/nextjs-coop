@@ -2,6 +2,7 @@
 import { useCart } from '@/app/components/CartContext';
 import Header from './Header';
 import CustomImage from './CustomImage';
+import Link from 'next/link';
 
 interface Product {
   id: number;
@@ -38,22 +39,24 @@ interface ProductsListProps {
                     return (
                       <div key={product.id} className="group">
                         <div className="overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                          {/* Use fixed size for CustomImage */}
-                          {product.image_url ? (
-                            <CustomImage
-                              alt={product.name}
-                              image_url={product.image_url}
-                              className="group-hover:opacity-75"
-                              width={300} 
-                              height={200} 
-                            />
+                            <Link href={`/products/${product.id}`}>
+                              {/* Use fixed size for CustomImage */}
+                              {product.image_url ? (
+                                <CustomImage
+                                  alt={product.name}
+                                  image_url={product.image_url}
+                                  className="group-hover:opacity-75"
+                                  width={300} 
+                                  height={200} 
+                                />
 
-                          ) : (
-                            <div className="bg-gray-200 flex items-center justify-center">
-                              <span>No Image</span>
+                              ) : (
+                                <div className="bg-gray-200 flex items-center justify-center">
+                                  <span>No Image</span>
+                                </div>
+                              )}
+                              </Link>
                             </div>
-                          )}
-                        </div>
                         <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
                         <p className="mt-1 text-lg font-medium text-gray-900">
                           ${Number(product.price).toFixed(2)}
