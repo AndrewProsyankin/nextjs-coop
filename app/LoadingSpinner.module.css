@@ -35,7 +35,7 @@
     transform: rotate(0deg);
   }
   100% {
-    transform: rotate(4320deg);
+    transform: rotate(4320deg); /* Быстрее для минутной стрелки */
   }
 }
 
@@ -49,5 +49,5 @@
 
 .loaded {
   animation: none;
-  transform: rotate(0deg); 
+  transform: rotate(0deg); /* Устанавливаем на 12:00 */
 }

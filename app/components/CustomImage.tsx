@@ -1,16 +1,16 @@
-'use client'
+'use client';
 import Image from 'next/image';
 
 interface CustomImageProps {
-  image_url: string | null;
-  alt: string;
-  width: number;
-  height: number;
-  className?: string;
+  image_url: string | null; 
+  alt: string; 
+  width: number; 
+  height: number; 
+  className?: string; 
 }
 
 const CustomImage: React.FC<CustomImageProps> = ({ image_url, alt, width, height, className }) => {
-  const isImageValid = image_url && image_url.startsWith('http'); // A simple check for a valid image URL
+  const isImageValid = image_url && image_url.startsWith('http'); 
 
   return (
     <div
@@ -19,13 +19,12 @@ const CustomImage: React.FC<CustomImageProps> = ({ image_url, alt, width, height
     >
       {isImageValid ? (
         <Image
-          src={image_url!} // We assume image_url is valid here
+          src={image_url} 
           alt={alt}
           width={width}
           height={height}
           className={`object-cover ${className}`}
           loading="lazy"
-          
         />
       ) : (
         <div
