@@ -8,8 +8,7 @@ import { Product, CartItem } from '@/app/types';
 const LoadingSpinner = dynamic(
   () => import('@/app/components/LoadingSpinner'), 
   { 
-    ssr: false,
-    loading: () => <div>Loading...</div>
+    ssr: false
   }
 );
 

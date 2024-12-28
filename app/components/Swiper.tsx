@@ -13,7 +13,7 @@ const MySwiper: React.FC = () => {
         navigation
         style={{ width: '100%', height: '100%' }}
       >
-        {Array.from({ length: 9 }, (_, index) => (
+        {Array.from({ length: 4 }, (_, index) => (
           <SwiperSlide key={index} style={swiperSlideStyle}>
             Slide {index + 1}
           </SwiperSlide>
@@ -28,8 +28,7 @@ const swiperSlideStyle: React.CSSProperties = {
   fontSize: '18px',
   background: '#fff',
   display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
+  alignItems: 'left',
 };
 
 export default MySwiper;
