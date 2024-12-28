@@ -20,7 +20,7 @@ export interface Product {
     { name: 'Gray', class: 'bg-gray-200', selectedClass: 'ring-gray-400' },
     { name: 'Black', class: 'bg-gray-900', selectedClass: 'ring-gray-900' }
   ];
-  image_url: string ;
+  image_url: string;
   imageAlt: string;
   imageSrc: string;
   isAvailable: boolean;
@@ -70,8 +70,8 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
   if (error) return <p>Failed to load product details.</p>;
   if (isLoading || !product)
     return (
-      <div className="p-8 max-w-4xl mx-auto bg-gray-100">
-        <LoadingSpinner isLoading={true} color="blue" text="Loading products..." />
+      <div className="p-8 w-full mx-auto bg-gray-100">
+        <LoadingSpinner isLoading={true} color="blue" />
       </div>
     );
 
@@ -88,19 +88,31 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
   return (
     <div className="bg-white">
       <div className="pt-6">
-        {/* Main Container with Two Columns */}
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-12">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:gap-8">
+        {/* Swiper Component */}
+        <div className="w-full lg:w-1/2">
           <Swiper
-            className="mySwiper"
+            className="w-full lg:w-1/2 mt-12"
             modules={[Navigation]}
             navigation
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: '75%', height: '100%' }}
           >
-            {Array.from({ length: 9 }, (_, index) => (
-              <SwiperSlide key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            {Array.from({ length: 4 }, (_, index) => (
+              <SwiperSlide
+                key={index}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
                 <CustomImage
                   alt={`Product image ${index + 1}`}
-                  image_url={product.image_url[index] || ''}  
+                  image_url={
+                    Array.isArray(product?.image_url) && product.image_url[index]
+                      ? product.image_url[index]
+                      : ''
+                  }
                   className="aspect-[2/3] w-full h-full max-h-[calc(100vh-200px)] rounded-lg bg-gray-100 object-cover"
                   width={400}
                   height={400}
@@ -109,9 +121,9 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
             ))}
           </Swiper>
         </div>
-  
-          {/* Product Info Section */}  
-          <div className="w-full lg:w-1/2">
+
+          {/* Product Info Section */}
+          <div className="w-full lg:w-1/2 mt-12">
             <div className="text-left px-8 lg:px-32">
               <h1 className="text-3xl font-bold text-gray-900">{productWithDefaults.name}</h1>
               <p className="text-lg font-medium text-gray-600">
@@ -129,7 +141,7 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
                 <p><strong>Material:</strong> {product.additionalDetails?.material || "N/A"}</p>
               </div>
   
-              {/* Color and Size Options */}
+              {/* Size Options */}
               <fieldset className="mt-6">
                 <h3 className="text-sm font-medium text-gray-900">Color</h3>
                 <RadioGroup value={selectedColor} onChange={setSelectedColor} className="flex items-center gap-x-3">
@@ -152,6 +164,7 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
                 </RadioGroup>
               </fieldset>
   
+              {/* Color Options */}
               <fieldset aria-label="Choose a size" className="mt-4">
                 <RadioGroup
                   value={selectedSize}
@@ -175,9 +188,10 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
                 </RadioGroup>
               </fieldset>
   
+              {/* Add to cart */}
               <button
                 onClick={() => handleAddToCart(productWithDefaults)}
-                className={`mt-6 mb-8 w-full rounded-md px-4 py-2 text-sm font-medium text-white ${
+                className={`mt-6 mb-12 w-full rounded-md px-4 py-2 text-sm font-medium text-white ${
                   isInCart
                     ? "bg-green-500"
                     : productWithDefaults.isAvailable && productWithDefaults.stock_quantity > 0
@@ -198,6 +212,7 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
           </div>
         </div>
       </div>
+    </div>
   );
 }
 
