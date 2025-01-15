@@ -5,6 +5,7 @@ export interface Product {
     id: number;
     name: string;
     price: number;
+    colors: [];
     image_url: string;
     isAvailable: boolean;
     imageAlt: string; 

@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import useSWR from 'swr';
 import { useCart } from '@/app/components/CartContext';
 import CustomImage from '@/app/components/CustomImage';
-import dynamic from 'next/dynamic';
 import { RadioGroup, Radio } from '@headlessui/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -20,37 +19,30 @@ export interface Product {
     { name: 'Gray', class: 'bg-gray-200', selectedClass: 'ring-gray-400' },
     { name: 'Black', class: 'bg-gray-900', selectedClass: 'ring-gray-900' }
   ];
-  image_url: string ;
+  image_url: string;  
   imageAlt: string;
-  imageSrc: string;
+  imageSrc: string;  
   isAvailable: boolean;
   stock_quantity: number;
+  gallery: [];
   sizes: { name: string; inStock: boolean }[];
   additionalDetails?: AdditionalDetails;
 }
 
 export interface AdditionalDetails {
-  weight?: string;
-  dimensions?: string;
-  manufacturer?: string;
-  material?: string;
-  careInstructions?: string;
-  colors?: string[];
+  weight: string; 
+  dimensions: string; 
+  manufacturer: string; 
+  material: string;
+  careInstructions: string; 
+  colors: string[]; 
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-const LoadingSpinner = dynamic(
-  () => import('@/app/components/LoadingSpinner'),
-  {
-    ssr: false
-  }
-);
-
 export default function ProductDetails({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = React.use(params);
   const { id } = resolvedParams || {};
-
   const { data: product, error, isLoading } = useSWR<Product>(
     id ? `/api/products/${id}` : null,
     fetcher,
@@ -68,50 +60,58 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
   };
 
   if (error) return <p>Failed to load product details.</p>;
-  if (isLoading || !product)
-    return (
-      <div className="p-8 max-w-4xl mx-auto bg-gray-100">
-        <LoadingSpinner isLoading={true} color="blue" text="Loading products..." />
-      </div>
-    );
+  if (isLoading || !product) return <p>Loading...</p>;
+
+  // Массив изображений для Swiper
+  const galleryImages = product.gallery && product.gallery.length > 0 
+    ? product.gallery 
+    : [product.image_url];  
 
   const productWithDefaults = {
     ...product,
-    imageAlt: product.imageAlt || 'Default alt text',
-    imageSrc: product.imageSrc || product.image_url,
+    imageAlt: product.name || 'Product Image',
+    image_url: product.image_url || galleryImages[0],
   };
 
   function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ')
+    return classes.filter(Boolean).join(' ');
   }
 
   return (
     <div className="bg-white">
       <div className="pt-6">
-        {/* Main Container with Two Columns */}
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-12">
-          <Swiper
-            className="mySwiper"
-            modules={[Navigation]}
-            navigation
-            style={{ width: '100%', height: '100%' }}
-          >
-            {Array.from({ length: 9 }, (_, index) => (
-              <SwiperSlide key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <CustomImage
-                  alt={`Product image ${index + 1}`}
-                  image_url={product.image_url[index] || ''}  
-                  className="aspect-[2/3] w-full h-full max-h-[calc(100vh-200px)] rounded-lg bg-gray-100 object-cover"
-                  width={400}
-                  height={400}
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-  
-          {/* Product Info Section */}  
+        <div className="flex flex-col lg:flex-row lg:items-start lg:gap-8 ">
+          {/* Swiper Component */}
           <div className="w-full lg:w-1/2">
+            <Swiper
+              className="w-full lg:w-1/2 mt-12"
+              modules={[Navigation]}
+              navigation
+              style={{ width: '75%', height: '100%' }}
+            >
+              {galleryImages.map((image_url, index) => (
+                <SwiperSlide
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <CustomImage
+                    image_url={image_url}
+                    alt={`Gallery image ${index}`}
+                    width={400}
+                    height={400}
+                    className="aspect-[2/3] w-full h-full max-h-[calc(100vh-200px)] rounded-lg bg-gray-100 object-cover"
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+
+          {/* Product Info Section */}
+          <div className="w-full lg:w-1/2 mt-12">
             <div className="text-left px-8 lg:px-32">
               <h1 className="text-3xl font-bold text-gray-900">{productWithDefaults.name}</h1>
               <p className="text-lg font-medium text-gray-600">
@@ -129,7 +129,7 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
                 <p><strong>Material:</strong> {product.additionalDetails?.material || "N/A"}</p>
               </div>
   
-              {/* Color and Size Options */}
+              {/* Size Options */}
               <fieldset className="mt-6">
                 <h3 className="text-sm font-medium text-gray-900">Color</h3>
                 <RadioGroup value={selectedColor} onChange={setSelectedColor} className="flex items-center gap-x-3">
@@ -152,6 +152,7 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
                 </RadioGroup>
               </fieldset>
   
+              {/* Color Options */}
               <fieldset aria-label="Choose a size" className="mt-4">
                 <RadioGroup
                   value={selectedSize}
@@ -175,9 +176,10 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
                 </RadioGroup>
               </fieldset>
   
+              {/* Add to cart */}
               <button
                 onClick={() => handleAddToCart(productWithDefaults)}
-                className={`mt-6 mb-8 w-full rounded-md px-4 py-2 text-sm font-medium text-white ${
+                className={`mt-6 mb-12 w-full rounded-md px-4 py-2 text-sm font-medium text-white ${
                   isInCart
                     ? "bg-green-500"
                     : productWithDefaults.isAvailable && productWithDefaults.stock_quantity > 0
@@ -198,7 +200,9 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
           </div>
         </div>
       </div>
+    </div>
   );
 }
+
 
 
