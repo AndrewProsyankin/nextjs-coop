@@ -1,34 +1,29 @@
 import React, { FormEvent } from 'react';
 import { Photo, Product } from '../interfaces';
-
 interface ProductFormProps {
   newProduct: Product;
-  setNewProduct: React.Dispatch<React.SetStateAction<Product>>;
+  setNewProduct: (product: Product) => void;
   photos: Photo[];
   onSubmit: (e: FormEvent) => void;
-  onSelectImage: (photoUrl: string) => void;
+  onSelectImage: (photoUrl: string) => void; 
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
   newProduct,
   setNewProduct,
-  photos,
   onSubmit,
-  onSelectImage,
+
 }) => {
-  const productFields: Array<"name" | "price" | "stock_quantity"> = ["name", "price", "stock_quantity"];
-  const additionalFields: Array<keyof Product["additionalDetails"]> = [
-    "weight",
-    "dimensions",
-    "manufacturer",
-    "material",
-    "colors",
+  const productFields = ['name', 'price', 'stock_quantity'] as const;
+  const additionalFields: Array<keyof Product['additionalDetails']> = [
+    'weight',
+    'dimensions',
+    'manufacturer',
+    'material',
+    'colors',
   ];
 
-  const handleAdditionalChange = (
-    field: keyof Product["additionalDetails"],
-    value: string | string[]
-  ) => {
+  const handleAdditionalChange = (field: keyof Product['additionalDetails'], value: string | string[]) => {
     setNewProduct({
       ...newProduct,
       additionalDetails: {
@@ -42,20 +37,20 @@ const ProductForm: React.FC<ProductFormProps> = ({
     <div className="max-w-4xl mx-auto p-8 bg-gray-200 rounded-lg mb-12">
       <h2 className="text-center text-gray-700 font-semibold mb-6">Add New Product</h2>
       <form onSubmit={onSubmit} className="space-y-6">
-        {/* Product */}
+        {/* Product Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {productFields.map((field) => (
             <div key={field} className="flex flex-col text-gray-700">
               <label className="font-medium text-gray-700 mb-2">
-                Product {field.charAt(0).toUpperCase() + field.slice(1)}
+                {`Product ${field.charAt(0).toUpperCase() + field.slice(1)}`}
               </label>
               <input
-                type={field === "price" ? "number" : "text"}
+                type={field === 'price' ? 'number' : 'text'}
                 value={newProduct[field] ?? ''}
                 onChange={(e) =>
                   setNewProduct({
                     ...newProduct,
-                    [field]: field === "price" ? Number(e.target.value) : e.target.value,
+                    [field]: field === 'price' ? Number(e.target.value) : e.target.value,
                   })
                 }
                 required
@@ -64,56 +59,32 @@ const ProductForm: React.FC<ProductFormProps> = ({
             </div>
           ))}
         </div>
-        {/* AdditionalDetails */}
+
+        {/* Additional Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {additionalFields.map((field) => (
             <div key={field} className="flex flex-col text-gray-700">
               <label className="font-medium text-gray-700 mb-2">
                 {field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1')}
               </label>
-              {field === "colors" ? (
-                <input
-                  type="text"
-                  value={newProduct.additionalDetails.colors.join(", ")}
-                  onChange={(e) =>
-                    handleAdditionalChange(
-                      "colors",
-                      e.target.value.split(",").map((color) => color.trim())
-                    )
-                  }
-                  required
-                  placeholder="Enter colors separated by commas"
-                  className="p-3 text-lg border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              ) : (
-                <input
-                  type="text"
-                  value={newProduct.additionalDetails[field] ?? ''}
-                  onChange={(e) => handleAdditionalChange(field, e.target.value)}
-                  required
-                  className="p-3 text-lg border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              )}
+              <input
+                type="text"
+                value={Array.isArray(newProduct.additionalDetails[field])
+                  ? (newProduct.additionalDetails[field] as string[]).join(', ')
+                  : (newProduct.additionalDetails[field] as string)}
+                onChange={(e) =>
+                  handleAdditionalChange(
+                    field,
+                    field === 'colors' ? e.target.value.split(',').map((c) => c.trim()) : e.target.value
+                  )
+                }
+                required
+                className="p-3 text-lg border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
           ))}
         </div>
-        {/* Image */}
-        <div className="flex flex-col mb-6 text-gray-700">
-          <label className="font-medium text-gray-700 mb-2">Select Product Photo</label>
-          <select
-            onChange={(e) => onSelectImage(e.target.value)}
-            value={newProduct.image_url ?? ''}
-            required
-            className="p-3 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select a photo</option>
-            {photos?.map((photo) => (
-              <option key={photo.key} value={photo.url}>
-                {photo.key}
-              </option>
-            ))}
-          </select>
-        </div>
+
         {/* Submit */}
         <button
           type="submit"

@@ -10,11 +10,13 @@ export interface Product {
   stock_quantity: number; 
   sizes: number;
   additionalDetails: AdditionalDetails;
+  gallery: string[]; 
   }
   
   export interface Photo {
     key: string;
     url: string;
+    urls: string[];
   }
 
   export interface AdditionalDetails {

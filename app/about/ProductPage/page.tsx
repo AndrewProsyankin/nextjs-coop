@@ -1,38 +1,20 @@
 'use client';
-import dynamic from 'next/dynamic';
+
 import ProductsList from '@/app/components/ProductsLists';
 import useSWR from 'swr';
 import { useCart } from '@/app/components/CartContext';
 import { Product, CartItem } from '@/app/types';
 
-const LoadingSpinner = dynamic(
-  () => import('@/app/components/LoadingSpinner'), 
-  { 
-    ssr: false
-  }
-);
 
 const fetcher = (url: string): Promise<Product[]> => fetch(url).then((res) => res.json());
 
 export default function ProductsPage() {
-  const { data: products, error, isLoading } = useSWR<Product[]>(
+  const { data: products } = useSWR<Product[]>(
     `${process.env.NEXT_PUBLIC_API_URL}/api/products`,
     fetcher,
     { revalidateOnFocus: true }
   );
   const { cartItems } = useCart();
-
-  if (error) {
-    return <div>Error: Failed to load products</div>;
-  }
-
-  if (isLoading || !products) {
-    return (
-      <div className="bg-gray-100 min-h-screen py-8">
-        <LoadingSpinner isLoading={true} color="blue" text="Loading products..." />
-      </div>
-    );
-  }
 
   return (
     <main>
@@ -48,6 +30,9 @@ interface CartUpdaterProps {
 }
 
 const CartUpdater = ({ products, cartItems }: CartUpdaterProps) => {
+  if (!products) 
+    return null;
+  
   const filteredCartItems = cartItems.filter((cartItem) =>
     products.some((product) => product.id === cartItem.id)
   );
