@@ -1,17 +1,19 @@
-'use client'
+'use client';
 import { useEffect, useState } from 'react';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ShoppingBagIcon, BellIcon, UserIcon } from '@heroicons/react/24/outline';
-import { useCart } from './CartContext'; 
+import { useCart } from './CartContext';
 import navbarCategories from '@/app/data/navbarCategories.json';
 import Cart from '../about/Cart/page';
 import Image from 'next/image';
+import AuthModal from './AuthModal';
 
 const Header = () => {
   const { cartItems } = useCart();
   const totalItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   const [mounted, setMounted] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -23,17 +25,13 @@ const Header = () => {
 
   const toggleCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-
-    if (isCartOpen) {
-      setIsCartOpen(false); 
-      setTimeout(() => {
-        setIsCartOpen(true); 
-      }, 0);
-    } else {
-      setIsCartOpen(true); 
-    }
+    setIsCartOpen((prev) => !prev);
   };
 
+  const toggleAuthModal = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsAuthModalOpen((prev) => !prev);
+  };
 
   return (
     <div className="bg-white">
@@ -97,18 +95,18 @@ const Header = () => {
               <button className="text-gray-400 hover:text-gray-500">
                 <BellIcon className="h-6 w-6" aria-hidden="true" />
               </button>
-
-              <button className="text-gray-400 hover:text-gray-500">
-                <UserIcon className="h-6 w-6" aria-hidden="true" />
-              </button>
+              <div className="relative text-gray-400 hover:text-gray-500" onClick={toggleAuthModal}>
+                <UserIcon className="h-6 w-6 cursor-pointer" aria-hidden="true" />
+              </div>
             </div>
           </div>
         </nav>
 
         {/* Render the Cart dialog based on isCartOpen state */}
-        {isCartOpen && (
-          <Cart />
-        )}
+        {isCartOpen && <Cart />}
+
+        {/* Render the AuthModal based on isAuthModalOpen state */}
+        {isAuthModalOpen && <AuthModal />}
       </header>
     </div>
   );
