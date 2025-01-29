@@ -1,14 +1,15 @@
-"use client";
+'use client'
 
 import React from "react";
 import localFont from "next/font/local";
-import "./globals.css";
+import "app/globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { usePathname } from "next/navigation";
 import { CartProvider } from "./components/CartContext";
 import LoadingSpinner from "./components/LoadingSpinner";
 import useSWR from "swr";
+import { CurrencyProvider, Currency } from "./components/Currency/CurrencyContext";
 
 const geistSans = localFont({
   src: "/fonts/GeistVF.woff",
@@ -23,44 +24,41 @@ const geistMono = localFont({
 });
 
 const fetcher = () => new Promise((resolve) => setTimeout(() => resolve(null), 900));
+interface RootLayoutProps {
+  children: React.ReactNode;
+  initialCurrencies: Currency[];
+}
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: RootLayoutProps) {
   const pathname = usePathname();
 
   const { isLoading } = useSWR("dummy-endpoint", fetcher, {
-    revalidateOnFocus: false, 
+    revalidateOnFocus: false,
   });
-
-  if (isLoading) {
-    return (
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <div className="bg-gray-100 min-h-screen flex items-center justify-center">
-            <LoadingSpinner isLoading={true} color="blue" />
-          </div>
-        </body>
-      </html>
-    );
-  }
-
+  
   return (
-    <CartProvider>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          {pathname !== "/about/ProductPage" &&
-            pathname !== "/app/products/[id]/page.tsx" && <Header />}
-          <main>{children}</main>
-          <Footer />
-        </body>
-      </html>
-    </CartProvider>
+    <CurrencyProvider >
+      <CartProvider>
+        <html lang="en">
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+            {pathname !== "/pages/ProductPage" && <Header />}
+            <main>
+              {isLoading ? (
+                <div className="bg-gray-100 min-h-screen flex items-center justify-center">
+                  <LoadingSpinner isLoading={true} color="blue" />
+                </div>
+              ) : (
+                children
+              )}
+            </main>
+            <Footer />
+          </body>
+        </html>
+      </CartProvider>
+    </CurrencyProvider>
   );
 }

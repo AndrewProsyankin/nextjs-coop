@@ -10,8 +10,8 @@
     {
       "label": "Navigation",
       "items": [
-        { "label": "Collections", "href": "/about/Categories" },
-        { "label": "Products", "href": "/about/ProductPage" },
+        { "label": "Collections", "href": "/pages/Categories" },
+        { "label": "Products", "href": "/pages/ProductPage" },
         { "label": "Activity", "href": "#" }
       ]
     },

@@ -1,7 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation'; 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const HomePage = () => {
@@ -9,7 +9,7 @@ const HomePage = () => {
   const [isClient, setIsClient] = useState(false);
 
   const handleNavigate = () => {
-    router.push('/about/Categories');
+    router.push('/pages/Categories');
   };
   useEffect(() => {
     setIsClient(true);

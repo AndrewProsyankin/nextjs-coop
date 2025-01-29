@@ -1,4 +1,6 @@
+import { AdditionalDetails } from '@/app/interfaces';
 import { sql } from '@vercel/postgres';
+import { revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
 export interface Product {
@@ -6,14 +8,22 @@ export interface Product {
   name: string;
   price: number;
   image_url: string | null;
+  stock_quantity: number;
+  additionalDetails: AdditionalDetails;
   gallery: string[];
 }
 
 // GET: Fetch list of products
 export async function GET() {
+  revalidateTag('products');
   try {
     const { rows }: { rows: Product[] } = await sql`SELECT * FROM products;`;
-    return NextResponse.json(rows, { status: 200 });
+    return NextResponse.json(rows, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=43200',
+      },
+    });
   } catch (error) {
     console.error('Error fetching products:', error);
     return NextResponse.json(
@@ -26,21 +36,38 @@ export async function GET() {
 // POST: Add a new product
 export async function POST(req: NextRequest) {
   try {
-    const { name, price, photo, gallery } = await req.json();
-    console.log('Incoming data for POST:', { name, price, photo, gallery });
-
-    if (!name || typeof price !== 'number') {
+    const { 
+      name, 
+      price, 
+      image_url, 
+      stock_quantity, 
+      gallery, 
+      additionalDetails 
+    } = await req.json();
+    
+    console.log('Incoming data for POST:', { 
+      name, price, image_url, stock_quantity, gallery, additionalDetails
+    });
+    
+    if (!name || typeof price !== 'number' || typeof stock_quantity !== 'number') {
       return NextResponse.json(
         { error: 'Invalid input data' },
         { status: 400 }
       );
     }
-
-    await sql`INSERT INTO products (name, price, image_url, photoUrl) VALUES (${name}, ${price}, ${photo || null}, ${gallery || null});`;
+    
+    await sql`
+      INSERT INTO products 
+        (name, price, image_url, stock_quantity, additional_details) 
+      VALUES 
+        (${name}, ${price}, ${image_url || null}, ${stock_quantity}, ${JSON.stringify(additionalDetails)});
+    `;
+    
     return NextResponse.json(
       { message: 'Product added successfully' },
       { status: 201 }
     );
+    
   } catch (error) {
     console.error('Error adding product:', error);
     return NextResponse.json(
@@ -97,7 +124,6 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    // Update main photo
     if (photo) {
       if (typeof photo !== 'string' || !photo.startsWith('http')) {
         return NextResponse.json(
@@ -114,7 +140,6 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    // Update gallery
     if (gallery) {
       const invalidUrls = gallery.filter(
         (photoUrl: string) => typeof photoUrl !== 'string' || !photoUrl.startsWith('http')
@@ -127,10 +152,8 @@ export async function PATCH(req: NextRequest) {
         );
       }
 
-      // Delete existing gallery
       await sql`DELETE FROM product_gallery WHERE product_id = ${id};`;
 
-      // Insert new gallery entries
       const insertPromises = gallery.map((photoUrl: string) =>
         sql`INSERT INTO product_gallery (product_id, image_url) VALUES (${id}, ${photoUrl});`
       );

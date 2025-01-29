@@ -1,3 +1,4 @@
+import { AdditionalDetails } from '@/app/interfaces';
 import { sql } from '@vercel/postgres';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -6,6 +7,9 @@ export interface Product {
   name: string;
   price: number;
   image_url: string | null;
+  stock_quantity: number;
+  additionalDetails: AdditionalDetails;
+  gallery: string[];
 }
 
 async function initializeDatabase() {
@@ -124,24 +128,26 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
     }
 
     const { rows } = await sql<Product[]>`
-      SELECT 
-        p.id, 
-        p.name, 
-        p.price, 
-        p.image_url, 
-        array_agg(pg.image_url) AS gallery
-      FROM 
-        products p
-      LEFT JOIN 
-        product_gallery pg 
-      ON 
-        p.id = pg.product_id
-      WHERE 
-        p.id = ${id}
-      GROUP BY 
-        p.id;
-    `;
-
+    SELECT 
+      p.id, 
+      p.name, 
+      p.price, 
+      p.image_url, 
+      p.stock_quantity, 
+      p.additional_details, 
+      array_agg(pg.image_url) AS gallery
+    FROM 
+      products p
+    LEFT JOIN 
+      product_gallery pg 
+    ON 
+      p.id = pg.product_id
+    WHERE 
+      p.id = ${id}
+    GROUP BY 
+      p.id;
+  `;
+  
     if (rows.length === 0) {
       return NextResponse.json(
         { error: 'Product not found' },
@@ -149,7 +155,12 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
       );
     }
 
-    return NextResponse.json(rows[0], { status: 200 });
+    return NextResponse.json(rows[0], {
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=43200', 
+      },
+    });
   } catch (error) {
     console.error('Error fetching product details:', error);
     return NextResponse.json(

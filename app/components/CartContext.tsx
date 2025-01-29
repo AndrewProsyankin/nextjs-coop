@@ -1,5 +1,5 @@
 'use client';
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useState } from 'react';
 
 interface Product {
   id: number;
@@ -27,15 +27,6 @@ interface CartContextType {
 }
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);
-
-// Custom hook to use the CartContext
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
-};
 
 const getInitialCart = (): CartItem[] => {
   if (typeof window !== 'undefined' && window.localStorage) {

@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import AuthForm from "./AuthForm";
-import RegisterForm from "./RegisterForm"; 
+import AuthForm from "../Forms/AuthForm";
+import RegisterForm from "../Forms/RegisterForm"; 
 
 const AuthModal: React.FC = () => {
   const [open, setOpen] = useState(true);

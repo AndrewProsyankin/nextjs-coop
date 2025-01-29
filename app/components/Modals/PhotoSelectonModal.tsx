@@ -1,6 +1,6 @@
 import React from 'react';
-import { Photo } from '../interfaces';
-import CustomImage from './CustomImage';
+import { Photo } from '@/app/interfaces'; 
+import CustomImage from '../CustomImage';
 
 interface PhotoSelectionModalProps {
   photos: Photo[];
