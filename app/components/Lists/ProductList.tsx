@@ -1,19 +1,28 @@
 import React from 'react';
-import { Product } from '../interfaces';
-import CustomImage from './CustomImage';
+import { Product } from '@/app/types';
+import CustomImage from '../CustomImage';
 
 interface ProductListProps {
-products: Product[];
-onDelete: (id: number) => void;
-onAddPhoto: (id: number) => void;
-onOpenGallery: (productId: number) => void;
+  products: Product[];
+  onDelete: (id: number) => void;
+  onAddPhoto: (id: number) => void;
+  onOpenGallery: (productId: number) => void;
+  getConvertedPrice: (price: number, currency: string) => string;
+  selectedCurrency: string;
 }
 
 function isValidImageUrl(url: string): boolean {
   return url.startsWith('http');
 }
 
-const ProductList: React.FC<ProductListProps> = ({ products, onDelete,  onOpenGallery, onAddPhoto }) => (
+const ProductList: React.FC<ProductListProps> = ({
+  products,
+  onDelete,
+  onAddPhoto,
+  onOpenGallery,
+  getConvertedPrice,
+  selectedCurrency,
+}) => (
   <div className="max-w-4xl mx-auto p-8 bg-gray-200 rounded-lg mb-12 space-y-4">
     <h2 className="text-center text-gray-700 font-semibold mb-6">Product List</h2>
     {products.length > 0 ? (
@@ -33,13 +42,15 @@ const ProductList: React.FC<ProductListProps> = ({ products, onDelete,  onOpenGa
               />
               <div>
                 <p className="text-gray-700">{product.name}</p>
-                <p className="text-gray-700">${product.price}</p>
+                <p className="text-gray-700">
+                  {getConvertedPrice(product.price, selectedCurrency)}
+                </p>
               </div>
             </div>
             <div className="flex space-x-4">
               <button
                 type="button"
-                onClick={() => onOpenGallery(product.id)}  
+                onClick={() => onOpenGallery(product.id)}
                 className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all mb-4"
               >
                 Open Gallery

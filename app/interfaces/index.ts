@@ -1,18 +1,16 @@
 export interface Product {
   id: number;
   name: string;
-  price: number;
-  colors: [];
+  price: number; 
   image_url: string;
   imageAlt: string;
   imageSrc: string;
-  isAvailable: boolean; 
-  stock_quantity: number; 
+  isAvailable: boolean;
+  stock_quantity: number;
   sizes: number;
   additionalDetails: AdditionalDetails;
-  gallery: string[]; 
-  }
-  
+  gallery: string[];
+}
   export interface Photo {
     key: string;
     url: string;
@@ -20,12 +18,11 @@ export interface Product {
   }
 
   export interface AdditionalDetails {
-    weight: string; 
-    dimensions: string; 
+    weight: number; 
+    dimensions: number; 
     manufacturer: string; 
     material: string;
-    careInstructions: string; 
-    colors: string[]; 
+    colors: string; 
   }
 
   export interface ProductsListProps {

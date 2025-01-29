@@ -1,8 +1,8 @@
 'use client';
 
-import ProductsList from '@/app/components/ProductsLists';
+import ProductsList from '@/app/components/Lists/ProductsLists';
 import useSWR from 'swr';
-import { useCart } from '@/app/components/CartContext';
+import { useCart } from '@/app/hooks/useCart';
 import { Product, CartItem } from '@/app/types';
 
 
@@ -13,6 +13,7 @@ export default function ProductsPage() {
     `${process.env.NEXT_PUBLIC_API_URL}/api/products`,
     fetcher,
     { revalidateOnFocus: true }
+    
   );
   const { cartItems } = useCart();
 

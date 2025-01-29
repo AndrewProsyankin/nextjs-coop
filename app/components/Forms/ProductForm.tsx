@@ -1,5 +1,5 @@
 import React, { FormEvent } from 'react';
-import { Photo, Product } from '../interfaces';
+import { Photo, Product } from '@/app/interfaces'; 
 interface ProductFormProps {
   newProduct: Product;
   setNewProduct: (product: Product) => void;

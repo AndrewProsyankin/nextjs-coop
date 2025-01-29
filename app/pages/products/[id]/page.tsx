@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import { useCart } from '@/app/components/CartContext';
+import { useCart } from '@/app/hooks/useCart'; 
 import CustomImage from '@/app/components/CustomImage';
 import { RadioGroup, Radio } from '@headlessui/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -46,7 +46,7 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
   const { data: product, error, isLoading } = useSWR<Product>(
     id ? `/api/products/${id}` : null,
     fetcher,
-    { revalidateOnFocus: true }
+    { revalidateOnFocus: false }
   );
 
   const [selectedColor, setSelectedColor] = useState<string | null>(null);

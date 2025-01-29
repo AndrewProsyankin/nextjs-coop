@@ -1,11 +1,12 @@
 'use client'
 import React, { useState, FormEvent } from 'react';
 import useSWR from 'swr';
-import ProductList from '../components/ProductList';
-import ProductForm from '../components/ProductForm';
-import PhotoSelectionModal from '../components/PhotoSelectonModal';
-import { Product, Photo } from '../interfaces';
-import GalleryImages from '../components/GalleryImages';
+import ProductList from '@/app/components/Lists/ProductList';
+import ProductForm from '@/app/components/Forms/ProductForm';
+import PhotoSelectionModal from '../../components/Modals/PhotoSelectonModal';
+import { Product, Photo } from '../../interfaces'; 
+import GalleryImages from '../../components/Modals/GalleryImages';
+import { useConvertedPrice } from '@/app/components/Currency/CurrencyContext';
 
 // API Fetcher
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -18,7 +19,6 @@ const ManageProductsPage = () => {
     id: 0,
     name: '',
     price: 0,
-    colors: [],
     image_url: '',
     imageAlt: '',
     imageSrc: '',
@@ -27,18 +27,18 @@ const ManageProductsPage = () => {
     sizes: 0,
     gallery:[],
     additionalDetails: {  
-      weight: '',
-      dimensions: '',
+      weight: 0,
+      dimensions: 0,
       manufacturer: '',
       material: '',
-      careInstructions: '',
-      colors: []
+      colors: ''
     }
   });
 
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const [isGalleryImagesOpen, setIsGalleryImagesOpen] = useState(false);
+  const { getConvertedPrice, selectedCurrency } = useConvertedPrice();
 
   // Handlers
   const handleAddProduct = async (e: FormEvent) => {
@@ -67,7 +67,6 @@ const ManageProductsPage = () => {
         id: 0,
         name: '',
         price: 0,
-        colors: [],
         image_url: '',
         imageAlt: '',
         imageSrc: '',
@@ -76,12 +75,11 @@ const ManageProductsPage = () => {
         sizes: 0,
         gallery:[],
         additionalDetails: {  
-          weight: '',
-          dimensions: '',
+          weight: 0,
+          dimensions: 0,
           manufacturer: '',
           material: '',
-          careInstructions: '',
-          colors: []
+          colors: ''
         }
       });
     } catch (error) {
@@ -200,8 +198,6 @@ const ManageProductsPage = () => {
     setSelectedProductId(null);
   };
 
-  
-
   return (
     <div className="bg-gray-100 min-h-screen py-8">
       <h1 className="text-center text-gray-800 text-3xl font-bold mb-8">Manage Products</h1>
@@ -218,7 +214,9 @@ const ManageProductsPage = () => {
         products={products}
         onDelete={handleDeleteProduct}
         onAddPhoto={openPhotoModal}
-        onOpenGallery={(productId: number) => openGalleryImages(productId)} 
+        onOpenGallery={(productId: number) => openGalleryImages(productId)}
+        getConvertedPrice={getConvertedPrice}
+        selectedCurrency={selectedCurrency}
       />
       {isPhotoModalOpen && (
         <PhotoSelectionModal

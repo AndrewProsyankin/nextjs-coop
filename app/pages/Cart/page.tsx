@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { useCart } from '@/app/components/CartContext';
+import { useCart } from '@/app/hooks/useCart'; 
 import { AnimatePresence, motion } from 'framer-motion';
 import CustomImage from '@/app/components/CustomImage';
 

@@ -1,21 +1,24 @@
-'use client';
+'use client'
 import { useEffect, useState } from 'react';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { ShoppingBagIcon, BellIcon, UserIcon } from '@heroicons/react/24/outline';
-import { useCart } from './CartContext';
+import { ShoppingBagIcon, BellIcon, UserIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { useCart } from '../hooks/useCart'; 
 import navbarCategories from '@/app/data/navbarCategories.json';
-import Cart from '../about/Cart/page';
-import Image from 'next/image';
-import AuthModal from './AuthModal';
+import Cart from '../pages/Cart/page';
+import Image from 'next/image'
+import AuthModal from './Modals/AuthModal';
+import  CurrencyDisplay  from './Currency/CurrencyDisplay';
 
-const Header = () => {
+
+const Header  = () => {
   const { cartItems } = useCart();
   const totalItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   const [mounted, setMounted] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isCurrencyDisplayOpen, setIsCurrencyDisplayOpen] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => { 
     setMounted(true);
   }, []);
 
@@ -32,6 +35,11 @@ const Header = () => {
     e.stopPropagation();
     setIsAuthModalOpen((prev) => !prev);
   };
+
+  const toggleCurrencyDisplay = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsCurrencyDisplayOpen((prev) => !prev);
+  }
 
   return (
     <div className="bg-white">
@@ -98,6 +106,9 @@ const Header = () => {
               <div className="relative text-gray-400 hover:text-gray-500" onClick={toggleAuthModal}>
                 <UserIcon className="h-6 w-6 cursor-pointer" aria-hidden="true" />
               </div>
+              <div className="relative text-gray-400 hover:text-gray-500" onClick={toggleCurrencyDisplay}>
+                <CurrencyDollarIcon className="h-6 w-6 cursor-pointer" aria-hidden="true" />
+              </div>
             </div>
           </div>
         </nav>
@@ -107,6 +118,9 @@ const Header = () => {
 
         {/* Render the AuthModal based on isAuthModalOpen state */}
         {isAuthModalOpen && <AuthModal />}
+
+        {/* Render the CurrencyDisplay based on isCurrencyDisplayOpen state */}
+        {isCurrencyDisplayOpen && <CurrencyDisplay />}
       </header>
     </div>
   );

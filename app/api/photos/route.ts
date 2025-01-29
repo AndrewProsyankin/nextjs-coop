@@ -14,7 +14,12 @@ export async function GET() {
       url: item.url,
     }));
 
-    return NextResponse.json(items, { status: 200 });
+    return NextResponse.json(items, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=43200',
+      },
+    });
   } catch (error) {
     console.error('Error fetching photos:', error);
     return NextResponse.json(

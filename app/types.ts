@@ -1,16 +1,26 @@
 import { Dispatch, SetStateAction } from "react";
 
-// types.ts
 export interface Product {
-    id: number;
-    name: string;
-    price: number;
-    colors: [];
-    image_url: string;
-    isAvailable: boolean;
-    imageAlt: string; 
-    imageSrc: string; 
-  }
+  id: number;
+  name: string;
+  price: number; 
+  image_url: string;
+  imageAlt: string;
+  imageSrc: string;
+  isAvailable: boolean;
+  stock_quantity: number;
+  sizes: number;
+  additionalDetails: AdditionalDetails;
+  gallery: string[];
+}
+
+export interface AdditionalDetails {
+  weight: number; 
+  dimensions: number; 
+  manufacturer: string; 
+  material: string;
+  colors: string; 
+}
   
   export interface CartItem {
     id: number;
